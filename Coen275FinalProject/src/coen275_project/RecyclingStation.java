@@ -31,7 +31,7 @@ public class RecyclingStation extends JFrame {
     private JLabel titleLabel, locationLabel;
 	private JButton addNewMachineButton;
     
-	private JPanel machineListPanel;
+	private MachineListPanel machineListPanel;
 	private Container contentPane;
 	
 	private ActionListener activateListener, removeListener, modifyListener, viewStatsListener, addMachineListener;  
@@ -87,14 +87,13 @@ public class RecyclingStation extends JFrame {
 		private JLabel titleLabel, machineIdLabel, machineLocationLabel;
 		private JButton activationButton, removeMachineButton, modifyMachineButton, viewStatsButton;
 		
+		private GridBagConstraints c;
 		
 		@SuppressWarnings("unchecked")
 		public MachineListPanel () {
 			
-			int i=0;
-			
 			this.setLayout(new GridBagLayout());
-			GridBagConstraints c = new GridBagConstraints();
+			c = new GridBagConstraints();
 			
 			// Create title label. Make the font big and underlined!
 			titleLabel = new JLabel("Recycling Machines");
@@ -122,14 +121,36 @@ public class RecyclingStation extends JFrame {
 				c.fill = GridBagConstraints.HORIZONTAL;
 				this.add(machineIdLabel, c);
 			}
+		}
+		
+		
+		
+		public void updateMachinePanel() {
+			
+			// Print message if no machines are currently assigned to the station.
+			if (numMachines == 0) {
+				
+				machineIdLabel = new JLabel("There are no machines currently assigned to this station.");
+				machineIdLabel.setFont(new Font("Arial", Font.PLAIN, 24));
+				c.gridx = 0;
+				c.gridy = 1;
+				c.weightx = 0.4;
+				c.gridheight = 1;
+				c.fill = GridBagConstraints.HORIZONTAL;
+				this.add(machineIdLabel, c);
+				
+			} else {
+				
+				machineIdLabel.setText(null);
+			}
 			
 			// Create a row for each existing machine
-			for (i = 1; i <= (numMachines*2); i = i+2) {
+			for (int i = 1; i <= (numMachines*2); i = i+2) {
 				
 				machineIdLabel = new JLabel("Machine " + i/2);
 				machineIdLabel.setFont(new Font("Arial", Font.PLAIN, 24));
 				c.gridx = 0;
-				c.gridy = i;
+				c.gridy = i+1;
 				c.weightx = 0.4;
 				c.gridheight = 1;
 				c.fill = GridBagConstraints.HORIZONTAL;
@@ -138,7 +159,7 @@ public class RecyclingStation extends JFrame {
 				machineLocationLabel = new JLabel("        <Location>");
 				machineLocationLabel.setFont(new Font("Arial", Font.PLAIN, 24));
 				c.gridx = 0;
-				c.gridy = i+1;
+				c.gridy = i+2;
 				c.weightx = 0.4;
 				this.add(machineLocationLabel, c);
 			
@@ -149,7 +170,7 @@ public class RecyclingStation extends JFrame {
 				activationButton.setToolTipText("Activate this machine");
 				activationButton.addActionListener(activateListener);
 				c.gridx = 1;
-				c.gridy = i;
+				c.gridy = i+1;
 				c.gridheight = 2;
 				c.weightx = 0.15;
 				this.add(activationButton, c);
@@ -158,7 +179,7 @@ public class RecyclingStation extends JFrame {
 				removeMachineButton.setToolTipText("Remove this machine from the Recycling Station");
 				removeMachineButton.addActionListener(removeListener);
 				c.gridx = 2;
-				c.gridy = i;
+				c.gridy = i+1;
 				c.gridheight = 2;
 				c.weightx = 0.15;
 				this.add(removeMachineButton, c);
@@ -167,7 +188,7 @@ public class RecyclingStation extends JFrame {
 				modifyMachineButton.setToolTipText("Modify this machine's settings");
 				modifyMachineButton.addActionListener(modifyListener);
 				c.gridx = 3;
-				c.gridy = i;
+				c.gridy = i+1;
 				c.gridheight = 2;
 				c.weightx = 0.15;
 				this.add(modifyMachineButton, c);
@@ -176,13 +197,11 @@ public class RecyclingStation extends JFrame {
 				viewStatsButton.setToolTipText("View statistics about this machine");;
 				viewStatsButton.addActionListener(viewStatsListener);
 				c.gridx = 4;
-				c.gridy = i;
+				c.gridy = i+1;
 				c.gridheight = 2;
 				c.weightx = 0.15;
-				//c.insets = new Insets(0, 10, 10, 0);
 				this.add(viewStatsButton, c);
 			}
-	
 		}
 	}
 	
@@ -223,6 +242,24 @@ public class RecyclingStation extends JFrame {
 		   public void actionPerformed(ActionEvent event) {
 			   
 			   System.out.println("Add new machine button pressed");
+			   
+			   if (numMachines < MAX_NUM_MACHINES) {
+				   
+				   machines[numMachines] = new RecyclingMachine();
+				   
+				   machines[numMachines].validate();
+				   machines[numMachines].pack();
+				   machines[numMachines].setVisible(true);
+				   			   
+				   numMachines++;
+   				   machineListPanel.updateMachinePanel();
+				   machineListPanel.validate();
+				   ProjectLauncher.recyclingStationFrame.pack();
+				   
+			   } else {
+				   
+				   //print that we can't create more machines...
+			   }
 		   }		
 	}
 }
