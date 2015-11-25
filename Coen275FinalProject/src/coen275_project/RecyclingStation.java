@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.font.TextAttribute;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -17,6 +18,8 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 
 
@@ -26,12 +29,18 @@ public class RecyclingStation extends JFrame {
 	private static final int MAX_NUM_MACHINES = 10;
 
 	private RecyclingMachine[] machines;
-	private int numMachines;
+	
+	private AddMachineFrame addMachineFrame;
+		
+	// numMachines is total number of machines; machineId is the latest, unused ID number. They will be the same until a machine is removed.
+	private int numMachines, machineId;  
 	
     private JLabel titleLabel, locationLabel;
 	private JButton addNewMachineButton;
-    
-	private MachineListPanel machineListPanel;
+    private JTextArea informationDisplay;
+    JScrollPane scrollPane; 
+
+    private MachineListPanel machineListPanel;
 	private Container contentPane;
 	
 	private ActionListener activateListener, removeListener, modifyListener, viewStatsListener, addMachineListener;  
@@ -40,7 +49,9 @@ public class RecyclingStation extends JFrame {
 	
     	// initialization
     	machines = new RecyclingMachine[MAX_NUM_MACHINES];
+    	addMachineFrame = new AddMachineFrame();
     	numMachines = 0;
+    	machineId = 0;
     	activateListener = new ToggleActivationListener();
     	removeListener = new RemoveMachineListener();
     	modifyListener = new ModifyMachineListener();
@@ -69,14 +80,17 @@ public class RecyclingStation extends JFrame {
 		addNewMachineButton.addActionListener(addMachineListener);
 		addNewMachineButton.setAlignmentX(CENTER_ALIGNMENT);
 		
-	    
+		informationDisplay = new JTextArea("", 5, 30);
+		informationDisplay.setEditable(false);
+		scrollPane = new JScrollPane(informationDisplay);
+		
 	    contentPane.add(titleLabel);
 	    contentPane.add(locationLabel);
 	    contentPane.add(Box.createRigidArea(new Dimension(0,10)));
 	   	contentPane.add(machineListPanel);
 	   	contentPane.add(Box.createRigidArea(new Dimension(0,10)));
 	   	contentPane.add(addNewMachineButton);
-	    
+	    contentPane.add(scrollPane);
 			
 	}
     
@@ -245,13 +259,24 @@ public class RecyclingStation extends JFrame {
 			   
 			   if (numMachines < MAX_NUM_MACHINES) {
 				   
+				   String newMachineLocation = "Default Location";
+				   TreeMap<String, Double> itemsAndPrices = null;
+				   double money=100.00;
+				   int numCoupons=10;
+				   
 				   machines[numMachines] = new RecyclingMachine();
+				   
+				   machines[numMachines].setNewMachineSettings(machineId, newMachineLocation, itemsAndPrices, money, numCoupons);
+				   
+				   informationDisplay.append("add machine " + numMachines + "\n");
 				   
 				   machines[numMachines].validate();
 				   machines[numMachines].pack();
 				   machines[numMachines].setVisible(true);
 				   			   
 				   numMachines++;
+				   machineId++;
+				   
    				   machineListPanel.updateMachinePanel();
 				   machineListPanel.validate();
 				   ProjectLauncher.recyclingStationFrame.pack();
