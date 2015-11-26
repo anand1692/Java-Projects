@@ -8,8 +8,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.font.TextAttribute;
-import java.util.Map;
 import java.util.TreeMap;
 
 import javax.swing.Box;
@@ -112,11 +110,7 @@ public class RecyclingStation extends JFrame {
 			// Create title label. Make the font big and underlined!
 			titleLabel = new JLabel("Recycling Machines");
 			titleLabel.setFont(new Font("Arial", Font.PLAIN, 32));
-			Font font = titleLabel.getFont();
-			@SuppressWarnings("rawtypes")
-			Map attributes = font.getAttributes();
-			attributes.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
-			titleLabel.setFont(font.deriveFont(attributes));
+			ProjectLauncher.underlineLabel(titleLabel);
 			c.gridx = 0;
 			c.gridy = 0;
 			c.fill = GridBagConstraints.CENTER;
@@ -139,7 +133,21 @@ public class RecyclingStation extends JFrame {
 		
 		
 		
+		@SuppressWarnings("unchecked")
 		public void updateMachinePanel() {
+			
+			// This function will re-create the entire panel based on what machines have been added, removed, or modified. 
+			// First we call removeAll() to give us a blank slate.
+			machineListPanel.removeAll();
+			
+			// Create title label. Make the font big and underlined!
+			titleLabel = new JLabel("Recycling Machines");
+			titleLabel.setFont(new Font("Arial", Font.PLAIN, 32));
+			ProjectLauncher.underlineLabel(titleLabel);
+			c.gridx = 0;
+			c.gridy = 0;
+			c.fill = GridBagConstraints.CENTER;
+			this.add(titleLabel, c);
 			
 			// Print message if no machines are currently assigned to the station.
 			if (numMachines == 0) {
@@ -147,7 +155,7 @@ public class RecyclingStation extends JFrame {
 				machineIdLabel = new JLabel("There are no machines currently assigned to this station.");
 				machineIdLabel.setFont(new Font("Arial", Font.PLAIN, 24));
 				c.gridx = 0;
-				c.gridy = 1;
+				c.gridy = 2;
 				c.weightx = 0.4;
 				c.gridheight = 1;
 				c.fill = GridBagConstraints.HORIZONTAL;
@@ -192,6 +200,7 @@ public class RecyclingStation extends JFrame {
 				removeMachineButton = new JButton("Remove");
 				removeMachineButton.setToolTipText("Remove this machine from the Recycling Station");
 				removeMachineButton.addActionListener(removeListener);
+				removeMachineButton.setActionCommand(""+(i/2));
 				c.gridx = 2;
 				c.gridy = i+1;
 				c.gridheight = 2;
@@ -235,15 +244,33 @@ public class RecyclingStation extends JFrame {
 		   public void actionPerformed(ActionEvent event) {
 			   
 			   System.out.println("remove button pressed");
+			   System.out.println("action command is " + event.getActionCommand());
+			 
+			   // The action command contains the index into the machines[] array. The machine needs to be removed. Then, we want to redo the 
+			   // machines[] array so that there are no gaps.
+			   int machineIndex = Integer.parseInt(event.getActionCommand());
+			   
+			   machines[machineIndex].dispose();
+			   
+			   int i = 0;
+			   for (i = machineIndex; i < numMachines; i++) {
+				   
+				   machines[i] = machines[i+1];
+			   }
+			   
+			   numMachines--;
+			   
+			   // redraw the RecyclingStation's GUI reflecting the removal
+			   machineListPanel.updateMachinePanel();
+			   machineListPanel.validate();
+			   ProjectLauncher.recyclingStationFrame.pack();
+			   
 		   }		
 	}
 	
 	// Handles "Modify" button for machines
 	class ModifyMachineListener implements ActionListener {
 		   public void actionPerformed(ActionEvent event) {
-
-			   System.out.println("modify button pressed");
-			   System.out.println("action command is " + event.getActionCommand());
 			   
 			   int machineIndex = Integer.parseInt(event.getActionCommand());
 			   
