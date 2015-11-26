@@ -30,7 +30,7 @@ public class RecyclingStation extends JFrame {
 
 	private RecyclingMachine[] machines;
 	
-	private AddMachineFrame addMachineFrame;
+	static AddMachineFrame addMachineFrame;
 		
 	// numMachines is total number of machines; machineId is the latest, unused ID number. They will be the same until a machine is removed.
 	private int numMachines, machineId;  
@@ -49,7 +49,6 @@ public class RecyclingStation extends JFrame {
 	
     	// initialization
     	machines = new RecyclingMachine[MAX_NUM_MACHINES];
-    	addMachineFrame = new AddMachineFrame();
     	numMachines = 0;
     	machineId = 0;
     	activateListener = new ToggleActivationListener();
@@ -69,7 +68,7 @@ public class RecyclingStation extends JFrame {
 	    titleLabel.setFont(titleLabelFont);
 	    titleLabel.setAlignmentX(CENTER_ALIGNMENT);	     
  
-	    locationLabel = new JLabel("Location string will go here!", SwingConstants.LEFT);
+	    locationLabel = new JLabel("Location: Santa Clara University", SwingConstants.LEFT);
 	    locationLabel.setFont(new Font("Serif", Font.PLAIN, 24));
 	    locationLabel.setAlignmentX(CENTER_ALIGNMENT);
 
@@ -161,7 +160,7 @@ public class RecyclingStation extends JFrame {
 			// Create a row for each existing machine
 			for (int i = 1; i <= (numMachines*2); i = i+2) {
 				
-				machineIdLabel = new JLabel("Machine " + i/2);
+				machineIdLabel = new JLabel("Machine " + machines[i/2].getMachineId());
 				machineIdLabel.setFont(new Font("Arial", Font.PLAIN, 24));
 				c.gridx = 0;
 				c.gridy = i+1;
@@ -170,7 +169,7 @@ public class RecyclingStation extends JFrame {
 				c.fill = GridBagConstraints.HORIZONTAL;
 				this.add(machineIdLabel, c);
 				
-				machineLocationLabel = new JLabel("        <Location>");
+				machineLocationLabel = new JLabel("        " + machines[i/2].getMachineLocation());
 				machineLocationLabel.setFont(new Font("Arial", Font.PLAIN, 24));
 				c.gridx = 0;
 				c.gridy = i+2;
@@ -219,6 +218,8 @@ public class RecyclingStation extends JFrame {
 		}
 	}
 	
+
+	
 	// Handles "Activate"/"Deactivate" button for machines
 	class ToggleActivationListener implements ActionListener {
 		   public void actionPerformed(ActionEvent event) {
@@ -258,33 +259,49 @@ public class RecyclingStation extends JFrame {
 			   System.out.println("Add new machine button pressed");
 			   
 			   if (numMachines < MAX_NUM_MACHINES) {
-				   
-				   String newMachineLocation = "Default Location";
-				   TreeMap<String, Double> itemsAndPrices = null;
-				   double money=100.00;
-				   int numCoupons=10;
-				   
+				   				   
 				   machines[numMachines] = new RecyclingMachine();
 				   
-				   machines[numMachines].setNewMachineSettings(machineId, newMachineLocation, itemsAndPrices, money, numCoupons);
-				   
-				   informationDisplay.append("add machine " + numMachines + "\n");
-				   
-				   machines[numMachines].validate();
-				   machines[numMachines].pack();
-				   machines[numMachines].setVisible(true);
-				   			   
-				   numMachines++;
-				   machineId++;
-				   
-   				   machineListPanel.updateMachinePanel();
-				   machineListPanel.validate();
-				   ProjectLauncher.recyclingStationFrame.pack();
-				   
+				   addMachineFrame = new AddMachineFrame(machineId);
+				   addMachineFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				   addMachineFrame.setTitle("Recycling Monitoring Station (RMOS) - add new machine");
+				   addMachineFrame.validate();
+				   addMachineFrame.pack();
+				   addMachineFrame.setVisible(true);
+				   ProjectLauncher.recyclingStationFrame.setVisible(false);
+				   				   
 			   } else {
 				   
 				   //print that we can't create more machines...
 			   }
 		   }		
+	}
+	
+	// Called from addMachineFrame. This relays the information filled in the addMachineFrame to the newly created RecyclingMachine 
+	public void addNewMachine(int machineID, String machineLocation, TreeMap<String, Double> itemsAndPrices, double money, int numCoupons) {
+		
+		machines[numMachines].setNewMachineSettings(machineID, machineLocation, itemsAndPrices, money, numCoupons);
+
+		informationDisplay.append("add machine " + machineId + "\n");
+	   
+		// We'll create a new addMachineFrame when the time is right. For now, we are done with this one and can kill it.
+		addMachineFrame.dispose();
+		
+		// make the new machine's GUI pop up.
+		machines[numMachines].validate();
+		machines[numMachines].pack();
+		machines[numMachines].setVisible(true);
+	   			   
+		numMachines++;
+		machineId++;
+	   
+		// redraw the RecyclingStation's GUI with the new machine
+		machineListPanel.updateMachinePanel();
+		machineListPanel.validate();
+		ProjectLauncher.recyclingStationFrame.pack();
+		ProjectLauncher.recyclingStationFrame.setVisible(true);
+		
+		return;
+		
 	}
 }

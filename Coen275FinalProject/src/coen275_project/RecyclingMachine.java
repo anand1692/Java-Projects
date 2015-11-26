@@ -34,6 +34,12 @@ public class RecyclingMachine extends JFrame {
 		return;
 	}
 	
+	// return the ID of the machine
+	public int getMachineId() {
+		
+		return 1;
+	}
+	
 	// return the location of the machine
 	public String getMachineLocation() {
 
