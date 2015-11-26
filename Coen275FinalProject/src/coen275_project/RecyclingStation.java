@@ -101,7 +101,6 @@ public class RecyclingStation extends JFrame {
 		
 		private GridBagConstraints c;
 		
-		@SuppressWarnings("unchecked")
 		public MachineListPanel () {
 			
 			this.setLayout(new GridBagLayout());
@@ -133,7 +132,6 @@ public class RecyclingStation extends JFrame {
 		
 		
 		
-		@SuppressWarnings("unchecked")
 		public void updateMachinePanel() {
 			
 			// This function will re-create the entire panel based on what machines have been added, removed, or modified. 
@@ -188,9 +186,18 @@ public class RecyclingStation extends JFrame {
 				c.fill = GridBagConstraints.CENTER;
 				
 				//c.insets = new Insets(0, 10, 10, 0);
-				activationButton = new JButton("Deactivate");
-				activationButton.setToolTipText("Deactivate this machine");
+				activationButton = new JButton();
+				
+				if(machines[i/2].isActive()) {
+					
+					activationButton.setText("Deactivate");
+					activationButton.setToolTipText("Deactivate this machine");
+				} else {
+					activationButton.setText("Activate");
+					activationButton.setToolTipText("Activate this machine");
+				}
 				activationButton.addActionListener(activateListener);
+				activationButton.setActionCommand(""+(i/2));
 				c.gridx = 1;
 				c.gridy = i+1;
 				c.gridheight = 2;
@@ -235,16 +242,31 @@ public class RecyclingStation extends JFrame {
 	class ToggleActivationListener implements ActionListener {
 		   public void actionPerformed(ActionEvent event) {
 			   
-			   System.out.println("activate button pressed");
+			   // The action command contains the index into the machines[] array. 
+			   // if the machine is active, it should be deactivated - meaning its GUI should disappear
+			   // if the machine is inactive, it should be activated - meaning its GUI should reappear
+			   int machineIndex = Integer.parseInt(event.getActionCommand());
+			   
+			   if(machines[machineIndex].isActive()) {
+				   
+				   machines[machineIndex].deactivateMachine();
+				   machines[machineIndex].setVisible(false);
+			   
+			   } else {
+				   
+				   machines[machineIndex].activateMachine();
+				   machines[machineIndex].setVisible(true);
+			   }
+			   
+			   machineListPanel.updateMachinePanel();
+			   machineListPanel.validate();
+			   ProjectLauncher.recyclingStationFrame.pack();
 		   }		
 	}
 	
 	// Handles "Remover" button for machines
 	class RemoveMachineListener implements ActionListener {
 		   public void actionPerformed(ActionEvent event) {
-			   
-			   System.out.println("remove button pressed");
-			   System.out.println("action command is " + event.getActionCommand());
 			 
 			   // The action command contains the index into the machines[] array. The machine needs to be removed. Then, we want to redo the 
 			   // machines[] array so that there are no gaps.
@@ -295,9 +317,7 @@ public class RecyclingStation extends JFrame {
 	// Handles "Add New Machine" button for machines
 	class AddMachineListener implements ActionListener {
 		   public void actionPerformed(ActionEvent event) {
-			   
-			   System.out.println("Add new machine button pressed");
-			   
+			   			   
 			   if (numMachines < MAX_NUM_MACHINES) {
 				   				   
 				   machines[numMachines] = new RecyclingMachine();

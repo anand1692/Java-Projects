@@ -41,6 +41,11 @@ public class RecyclingMachine extends JFrame {
 		return;
 	}
 	
+	public boolean isActive() {
+		
+		return true;
+	}
+	
 	// return the ID of the machine
 	public int getMachineId() {
 		
