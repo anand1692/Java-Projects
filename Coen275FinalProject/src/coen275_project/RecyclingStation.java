@@ -31,6 +31,7 @@ public class RecyclingStation extends JFrame {
 	private RecyclingMachine[] machines;
 	
 	static AddMachineFrame addMachineFrame;
+	static ModifyMachineFrame modifyMachineFrame;
 		
 	// numMachines is total number of machines; machineId is the latest, unused ID number. They will be the same until a machine is removed.
 	private int numMachines, machineId;  
@@ -179,8 +180,8 @@ public class RecyclingStation extends JFrame {
 				c.fill = GridBagConstraints.CENTER;
 				
 				//c.insets = new Insets(0, 10, 10, 0);
-				activationButton = new JButton("Activate");
-				activationButton.setToolTipText("Activate this machine");
+				activationButton = new JButton("Deactivate");
+				activationButton.setToolTipText("Deactivate this machine");
 				activationButton.addActionListener(activateListener);
 				c.gridx = 1;
 				c.gridy = i+1;
@@ -200,6 +201,7 @@ public class RecyclingStation extends JFrame {
 				modifyMachineButton = new JButton("Modify");
 				modifyMachineButton.setToolTipText("Modify this machine's settings");
 				modifyMachineButton.addActionListener(modifyListener);
+				modifyMachineButton.setActionCommand(""+(i/2));
 				c.gridx = 3;
 				c.gridy = i+1;
 				c.gridheight = 2;
@@ -241,6 +243,17 @@ public class RecyclingStation extends JFrame {
 		   public void actionPerformed(ActionEvent event) {
 
 			   System.out.println("modify button pressed");
+			   System.out.println("action command is " + event.getActionCommand());
+			   
+			   int machineIndex = Integer.parseInt(event.getActionCommand());
+			   
+			   modifyMachineFrame = new ModifyMachineFrame(machines[machineIndex]);
+			   modifyMachineFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			   modifyMachineFrame.setTitle("Recycling Monitoring Station (RMOS) - modify machine " + machines[machineIndex].getMachineId());
+			   modifyMachineFrame.validate();
+			   modifyMachineFrame.pack();
+			   modifyMachineFrame.setVisible(true);
+			   ProjectLauncher.recyclingStationFrame.setVisible(false);
 		   }		
 	}
 	
@@ -302,6 +315,35 @@ public class RecyclingStation extends JFrame {
 		ProjectLauncher.recyclingStationFrame.setVisible(true);
 		
 		return;
+	}
+	
+	// Called from modifyMachineFrame. This relays the information filled in the modifyMachineFrame to the corresponding RecyclingMachine
+	public void modifyMachine(int machineID, String machineLocation, TreeMap<String, Double> itemsAndPrices, double money, int numCoupons) {
 		
+		int machineIndex = getMachineIndexFromId(machineId);
+		machines[machineIndex].modifyMachineSettings(machineLocation, itemsAndPrices, money, numCoupons);
+		
+		// We'll create a new modifyMachineFrame when the time is right. For now, we are done with this one and can kill it.
+		modifyMachineFrame.dispose();
+	   
+		// redraw the RecyclingStation's GUI with the new machine
+		machineListPanel.updateMachinePanel();
+		machineListPanel.validate();
+		ProjectLauncher.recyclingStationFrame.pack();
+		ProjectLauncher.recyclingStationFrame.setVisible(true);
+	}
+	
+	// RecyclingStation needs to know the index of a machine into the machines[] array. Other components only know about the machineId though
+	// which is not necessarily the same number. This function translates. 
+	private int getMachineIndexFromId(int machineId) {
+		
+		for (int i = 0; i < numMachines; i++) {
+			if (machines[i].getMachineId() == machineId) {
+				return i;
+			}
+		}
+		
+		System.out.println("ERROR-getMachineIndexFromId");
+		return -1;
 	}
 }

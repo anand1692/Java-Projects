@@ -34,6 +34,13 @@ public class RecyclingMachine extends JFrame {
 		return;
 	}
 	
+	// This will be called when the Admin wants to change the settings of the machine. If it makes sense, this function can be removed, and we can 
+	// reuse setNewMachineSettings. It's probably best to have its own function though to make RecyclingMachine GUI modifications simpler.
+	public void modifyMachineSettings(String newLocation, TreeMap<String, Double> newItemsAndPrices, double money, int coupons) {
+		
+		return;
+	}
+	
 	// return the ID of the machine
 	public int getMachineId() {
 		
@@ -46,6 +53,16 @@ public class RecyclingMachine extends JFrame {
 		return "location!";
 	}
 	
+	public double getMoneyInMachine() {
+		
+		return 55.55;
+	}
+	
+	public int getCouponsInMachine() {
+		
+		return 3;
+	}
+	
 	// This allows the RecyclingStation to know what items and prices the machine currently accepts.
 	public TreeMap<String, Double> getCurrentMachineItemsAndPrices() {
 		
@@ -55,12 +72,6 @@ public class RecyclingMachine extends JFrame {
 		items.put("Glass", new Double(18.22));
 		
 		return items;
-	}
-	
-	// This will be called when the Admin wants to change the settings of the machine. 
-	public void modifyMachineSettings(String newLocation, TreeMap<String, Double> newItemsAndPrices) {
-		
-		return;
 	}
 	
 	// Function to activate a machine

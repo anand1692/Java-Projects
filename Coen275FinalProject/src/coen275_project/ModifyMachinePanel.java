@@ -136,6 +136,20 @@ class ModifyMachinePanel extends JPanel {
 		
 	}
 	
+	public ModifyMachinePanel(TreeMap<String, Double> currentItemsAndPrices, double machineMoney, int machineCoupons) {
+		
+		// calls default constructor
+		this();  
+		
+		itemsAndPrices = currentItemsAndPrices;
+		moneyField.setText("" + machineMoney);
+		couponField.setText("" + machineCoupons);
+		
+		updateItemPanel();
+		//RecyclingStation.modifyMachineFrame.pack();
+		
+	}
+
 	private void updateItemPanel(){
 		
 		int i = 1;
@@ -185,9 +199,17 @@ class ModifyMachinePanel extends JPanel {
 		    i++;
 		}
 		
-		// redraws the panel
+		// redraws the panel. This panel is used for both the addMachineFrame and the modifyMachineFrame. Either way, we want to re pack the frame
+		// at the end of this function, but we don't know which frame we're in. Instead of creating some flag, we'll just try to pack each one. By
+		// using try/catch, we won't crash when we try to pack a null frame.
 		this.validate();
-		RecyclingStation.addMachineFrame.pack();
+		try {
+			RecyclingStation.addMachineFrame.pack();
+		} catch (Exception e) {}
+		
+		try {
+			RecyclingStation.modifyMachineFrame.pack();
+		} catch (Exception e) {}
 	}
 		
 	public TreeMap<String, Double> getItemsAndPrices() {
