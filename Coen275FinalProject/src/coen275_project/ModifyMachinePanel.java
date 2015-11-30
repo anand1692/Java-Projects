@@ -7,6 +7,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
 import java.util.TreeMap;
 import java.util.Map.Entry;
 
@@ -35,6 +36,7 @@ class ModifyMachinePanel extends JPanel {
 	private ActionListener removeListener, addListener;
 	
 	private JPanel currentItemsPanel, addItemsPanel, moneyPanel, couponPanel;
+	private DecimalFormat df;
 	
 	public ModifyMachinePanel() {
 		
@@ -42,6 +44,8 @@ class ModifyMachinePanel extends JPanel {
 		removeListener = new RemoveItemListener();
 		addListener = new AddItemListener();
 		itemsAndPrices = new TreeMap<String, Double>();
+		df = new DecimalFormat(); 
+		df.setMaximumFractionDigits(2);  // ensure money value is no more than 2 decimal places
 		
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
@@ -112,7 +116,7 @@ class ModifyMachinePanel extends JPanel {
 		moneyPanel = new JPanel();
 		moneyPanel.setLayout(new FlowLayout());
 		moneyLabel = new JLabel("Money in the machine (in dollars): ");
-		moneyField = new JTextField("100.0", 10);
+		moneyField = new JTextField("100.00", 10);
 		moneyField.setEditable(true);
 		moneyPanel.add(moneyLabel);
 		moneyPanel.add(moneyField);
@@ -142,7 +146,7 @@ class ModifyMachinePanel extends JPanel {
 		this();  
 		
 		itemsAndPrices = currentItemsAndPrices;
-		moneyField.setText("" + machineMoney);
+		moneyField.setText(df.format(machineMoney));
 		couponField.setText("" + machineCoupons);
 		
 		updateItemPanel();

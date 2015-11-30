@@ -39,7 +39,8 @@ public class ModifyMachineFrame extends JFrame implements ActionListener {
 		// initialization
 		machineId = machine.getMachineId();
 		machineLocation = machine.getMachineLocation();
-		itemsAndPrices = machine.getCurrentMachineItemsAndPrices();
+		//itemsAndPrices = machine.getCurrentMachineItemsAndPrices();
+		itemsAndPrices = machine.getItemList();
 		machineMoney = machine.getMoneyInMachine();
 		machineCoupons = machine.getCouponsInMachine();
 		
