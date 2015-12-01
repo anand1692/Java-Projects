@@ -12,7 +12,7 @@ public class ItemsInMachine {
 	private TreeMap<String, Double> itemList; // price per pound
 	
 	public ItemsInMachine() {
-
+		// TODO Auto-generated constructor stub
 		String[] items = {"Aluminium", "Glass", "Plastic", "Paper", "Steel"};
 		recyclableItems = new ArrayList<String>();
 		Collections.addAll(recyclableItems, items);
@@ -69,13 +69,9 @@ public class ItemsInMachine {
 		this.setRecyclableItems(newItemList);
 	}
 	
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public DefaultComboBoxModel updateItemList(DefaultComboBoxModel model, TreeMap<String, Double> itemList) {
 		model.removeAllElements();
 		ArrayList<String> newItemList = new ArrayList<String>();
-		
-		model.addElement("Default");
-		
 		for(String s:itemList.keySet()) {
 			model.addElement(s);
 			newItemList.add(s);

@@ -1,25 +1,37 @@
 package coen275_project;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.TreeMap;
 
-public class MachineStatus {
+public class MachineStatus implements Serializable {
 	
-	double moneyInMachine; 	// in $
-	int couponsInMachine;	// worth in $
-	double weightInMachine;	// in tons
+	private int machineId;
+	private String location;
+	private boolean active;
+	private double moneyInMachine; 	// in $
+	private int couponsInMachine;	// worth in $
+	private double weightInMachine;	// in tons
 	private TreeMap<Date, Double> emptyTimestamp;
-	int numberOfTimesEmptied;
-	double weightCapacity; 	// in pounds
-	int totalItemsCollected;
+	private int numberOfTimesEmptied;
+	private double weightCapacity; 	// in pounds
+	private int totalItemsCollected;
 	private TreeMap<String, Integer> itemsCollectedByType;
-	double totalCashIssued;
-	int totalCouponsIssued;
-	double totalValueIssued;
+	private double totalCashIssued;
+	private int totalCouponsIssued;
+	private double totalValueIssued;
 	
 	public MachineStatus(ArrayList<String> recyclableItems) {
 		// TODO Auto-generated constructor stub
+		machineId = 0;
+		location = "University";
+		active = true;
 		moneyInMachine = 200;
 		couponsInMachine = 2;
 		weightInMachine = 0;
@@ -38,6 +50,60 @@ public class MachineStatus {
 		}
 	}
 	
+	public static void serialize(MachineStatus msOb, String filename) {
+		FileOutputStream fout = null;
+		ObjectOutputStream out = null;
+		try {
+			fout = new FileOutputStream(filename);
+			out = new ObjectOutputStream(fout);
+			out.writeObject(msOb);
+			out.close();
+		} catch(IOException ex) {
+			ex.printStackTrace();
+		}
+	}
+	
+	public static MachineStatus deSerialize(String filename) {
+		MachineStatus msOb = null;
+		FileInputStream fis = null;
+		ObjectInputStream fin = null;
+		
+		try {
+			fis = new FileInputStream(filename);
+			fin = new ObjectInputStream(fis);
+			msOb = (MachineStatus)fin.readObject();
+			fin.close();
+		} catch(IOException ex) {
+			ex.printStackTrace();
+		} catch(ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		return msOb;
+	}
+	
+	
+	/**
+	 * @return the machineId
+	 */
+	public int getMachineId() {
+		return machineId;
+	}
+
+	/**
+	 * @return the location
+	 */
+	public String getLocation() {
+		return location;
+	}
+
+	/**
+	 * @return the active
+	 */
+	public boolean isActive() {
+		return active;
+	}
+
 	/**
 	 * @return the moneyInMachine
 	 */
@@ -116,6 +182,27 @@ public class MachineStatus {
 	}
 	
 	/**
+	 * @param machineId the machineId to set
+	 */
+	public void setMachineId(int machineId) {
+		this.machineId = machineId;
+	}
+
+	/**
+	 * @param location the location to set
+	 */
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
+	/**
+	 * @param active the active to set
+	 */
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+	
+	/**
 	 * @param moneyInMachine the moneyInMachine to set
 	 */
 	public void setMoneyInMachine(double moneyInMachine) {
@@ -164,10 +251,16 @@ public class MachineStatus {
 		this.totalItemsCollected = totalItemsCollected;
 	}
 
+	
+	public void setItemsCollectedByType(
+			TreeMap<String, Integer> itemsCollectedByType) {
+		this.itemsCollectedByType = itemsCollectedByType;
+	}
+
 	/**
-	 * @param itemsCollectedByType the itemsCollectedByType to set
+	 * @param itemsCollectedByType the itemsCollectedByType to updated
 	 */
-	public void setItemsCollectedByType(String item) {
+	public void updateItemsCollectedByType(String item) {
 		TreeMap<String, Integer> itemsCollected = this.getItemsCollectedByType();
 		itemsCollected.put(item, itemsCollected.get(item)+1);	
 		this.itemsCollectedByType = itemsCollected;

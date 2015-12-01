@@ -7,6 +7,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -23,12 +29,8 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-@SuppressWarnings("serial")
 public class RecyclingMachine extends JFrame{
 
-	private int machineId;
-	private String location;
-	private boolean active;
 	private ItemsInMachine itemList;
 	private MachineStatus machineStatus;
 	
@@ -36,14 +38,13 @@ public class RecyclingMachine extends JFrame{
 	private String itemTypeSelected;
 	private Double pricePerPound, moneyToBeReturned = (double)0, weightAdded;
 	private Boolean toggle = false, sessionEnded = false;
+	private String metricSystem = "lbs";
 	
-//	private static final int FRAME_WIDTH = 500;
-//	private static final int FRAME_HEIGHT = 300;
-	
+	private static final int FRAME_WIDTH = 500;
+	private static final int FRAME_HEIGHT = 300;
 	Container content;
 	JLabel machineInfoLabel, metricLabel;
 	JRadioButton singleItem, multipleItem, cash, coupons;
-	@SuppressWarnings("rawtypes")
 	JComboBox itemTypeList;
 	JTextArea priceDisplay, messageDisplay;
 	JButton toggleMetric, insertItem, endSession;
@@ -57,18 +58,16 @@ public class RecyclingMachine extends JFrame{
 //	}
 	
 	public RecyclingMachine() {
-		machineId = 0;
-		location = "University";
-		active = true;
+		// TODO Auto-generated constructor stub
 		itemList = new ItemsInMachine();
 		machineStatus = new MachineStatus(itemList.getRecyclableItems());
 	}
 
 	public RecyclingMachine(int id) {
 		this();
-		machineId = id;
+		machineStatus.setMachineId(id);
 		content = this.getContentPane();
-		machineInfoLabel = new JLabel("RCM "+ this.machineId + " : At " + this.location);
+		machineInfoLabel = new JLabel("RCM "+ machineStatus.getMachineId() + " : At " + machineStatus.getLocation());
 		JPanel session = getSessionTypePanel();
 		JPanel insertItem = getInsertItemPanel();
 		JPanel moneyBack = getMoneyBackPanel();
@@ -82,13 +81,13 @@ public class RecyclingMachine extends JFrame{
 		content.add(display);
 		
 		// Set the size of the frame
-//		this.setSize(FRAME_WIDTH, FRAME_HEIGHT);
-//		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//		this.setTitle("Recycling Machine");
-//		this.setVisible(true);
+		this.setSize(FRAME_WIDTH, FRAME_HEIGHT);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setTitle("Recycling Machine");
+		this.setVisible(true);
 
 		// center the mainFrame on screen
-//		this.setLocationRelativeTo(null);
+		this.setLocationRelativeTo(null);
 	}
 	
 	private class RadioButtonHandler implements ActionListener {
@@ -165,7 +164,7 @@ public class RecyclingMachine extends JFrame{
 				couponAvail = returnCouponMoney(moneyToBeReturned);
 				if(couponAvail) {
 					messageDisplay.setText("Sorry cash not available.\n Here's your money in coupons worth "
-							+ df.format(moneyToBeReturned) + " for " + df.format(weightAdded) + " of " + itemTypeSelected
+							+ df.format(moneyToBeReturned) + " for " + df.format(weightAdded) + " lbs of " + itemTypeSelected
 							+ ".\nThanks for recycling!\n");
 				}else {
 					if(sessionType == 1)
@@ -179,7 +178,7 @@ public class RecyclingMachine extends JFrame{
 				}
 			} else {
 				messageDisplay.setText("Here's your money in cash worth $" + df.format(moneyToBeReturned)
-										+ " for " + df.format(weightAdded) + " of " + itemTypeSelected 
+										+ " for " + df.format(weightAdded) + " lbs of " + itemTypeSelected 
 										+ ".\nThanks for recycling!\n");
 			}
 		} else if(modeOfPayment == 2) {
@@ -188,7 +187,7 @@ public class RecyclingMachine extends JFrame{
 				cashAvail = returnCashMoney(moneyToBeReturned);
 				if(cashAvail) {
 					messageDisplay.setText("Sorry coupon not available.\n Here's your money in cash worth "
-							+ df.format(moneyToBeReturned) + " for " + df.format(weightAdded) + " of " + itemTypeSelected
+							+ df.format(moneyToBeReturned) + " for " + df.format(weightAdded) + " lbs of " + itemTypeSelected
 							+ ".\nThanks for recycling!\n");	
 				}else {
 					if(sessionType == 1)
@@ -202,7 +201,7 @@ public class RecyclingMachine extends JFrame{
 				}
 			} else {
 				messageDisplay.setText("Here's your money in coupons worth $" + df.format(moneyToBeReturned)
-						+ " for " + df.format(weightAdded) + " of " + itemTypeSelected + ".\nThanks for recycling!\n");
+						+ " for " + df.format(weightAdded) + " lbs of " + itemTypeSelected + ".\nThanks for recycling!\n");
 			}
 		}
 	}
@@ -240,7 +239,7 @@ public class RecyclingMachine extends JFrame{
 							finalizeTransaction();
 							endSession.setEnabled(false);
 						}
-						messageDisplay.append(df.format(weight) + " of "+ itemTypeSelected + " accepted! Total Money earned = $" 
+						messageDisplay.append(df.format(weight) + " lbs of "+ itemTypeSelected + " accepted! Total Money earned = $" 
 												+ df.format(moneyToBeReturned)+"\n");
 					}	
 				}
@@ -251,7 +250,6 @@ public class RecyclingMachine extends JFrame{
 		}
 	}
 	
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private JPanel getInsertItemPanel() {
 		JPanel panel = new JPanel();
 		JLabel label1 = new JLabel("Item type: ");
@@ -330,21 +328,24 @@ public class RecyclingMachine extends JFrame{
 		return panel;
 	}
 	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void modifyMachineSettings(String newLocation, TreeMap<String, Double> newItemList, 
 									  double money, int coupons) {
-		this.setLocation(newLocation);
+		machineStatus.setLocation(newLocation);
 		this.itemList.setItemList(newItemList);
-		this.setMoneyInMachine(money);
-		this.setCouponsInMachine(coupons);
+		machineStatus.setMoneyInMachine(money);
+		machineStatus.setCouponsInMachine(coupons);
+		TreeMap<String, Integer> itemsCollectedByType = new TreeMap<String, Integer>();
+		for(String s: newItemList.keySet())
+			itemsCollectedByType.put(s, 0);
 		
-		machineInfoLabel.setText(("RCM "+ this.machineId + " : At " + this.location));
+		machineStatus.setItemsCollectedByType(itemsCollectedByType);
+		
+		machineInfoLabel.setText(("RCM "+ machineStatus.getMachineId() + " : At " + machineStatus.getLocation()));
 		DefaultComboBoxModel model = (DefaultComboBoxModel)itemTypeList.getModel();
 		model = itemList.updateItemList(model, newItemList);
 		itemTypeList.setModel(model);
 	}
 	
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void addItemToList(String item, Double price) {
 		this.itemList.addItemToList(item, price);
 		DefaultComboBoxModel model = (DefaultComboBoxModel)itemTypeList.getModel();
@@ -352,7 +353,6 @@ public class RecyclingMachine extends JFrame{
 		itemTypeList.setModel(model);
 	}
 	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void removeItemFromList(String item) {
 		this.itemList.removeItemFromList(item);
 		DefaultComboBoxModel model = (DefaultComboBoxModel)itemTypeList.getModel();
@@ -385,7 +385,7 @@ public class RecyclingMachine extends JFrame{
 		weightAdded = weight;
 		machineStatus.setWeightInMachine(machineStatus.getWeightInMachine()+weight);
 		machineStatus.setTotalItemsCollected(machineStatus.getTotalItemsCollected()+1);
-		machineStatus.setItemsCollectedByType(item);
+		machineStatus.updateItemsCollectedByType(item);
 		return money;
 	}
 	
@@ -421,30 +421,37 @@ public class RecyclingMachine extends JFrame{
 	
 	public void emptyMachine() {
 		TreeMap<Date, Double> emptyTimestamp = machineStatus.getEmptyTimestamp();
-		emptyTimestamp.put(new Date(), machineStatus.getWeightInMachine());
+		Double weight = machineStatus.getWeightInMachine();
+		emptyTimestamp.put(new Date(), weight);
 		machineStatus.setWeightInMachine(0);
 		machineStatus.setNumberOfTimesEmptied(machineStatus.getNumberOfTimesEmptied() + 1);
+		messageDisplay.setText("Machine has been emptied.\n" + weight + " of recycled material has been emptied\n");
 	}
 	
+	
+	public MachineStatus getMachineStatus() {
+		return machineStatus;
+	}
+
 	/**
 	 * @return the machineId
 	 */
 	public int getMachineId() {
-		return machineId;
+		return machineStatus.getMachineId();
 	}
 
 	/**
 	 * @return the location
 	 */
 	public String getMachineLocation() {
-		return location;
+		return machineStatus.getLocation();
 	}
 
 	/**
 	 * @return the active
 	 */
 	public boolean isActive() {
-		return active;
+		return machineStatus.isActive();
 	}
 
 	/**
@@ -542,21 +549,21 @@ public class RecyclingMachine extends JFrame{
 	 * @param machineId the machineId to set
 	 */
 	public void setMachineId(int machineId) {
-		this.machineId = machineId;
+		machineStatus.setMachineId(machineId);
 	}
 
 	/**
 	 * @param location the location to set
 	 */
 	public void setLocation(String location) {
-		this.location = location;
+		machineStatus.setLocation(location);
 	}
 
 	/**
 	 * @param active the active to set
 	 */
 	public void setActive(boolean active) {
-		this.active = active;
+		machineStatus.setActive(active);
 	}
 
 	/**
@@ -586,5 +593,8 @@ public class RecyclingMachine extends JFrame{
 	public void setWeightCapacity(double weightCapacity) {
 		this.machineStatus.setWeightCapacity(weightCapacity);
 	}
-
+	
+	public static void main(String[] args) {
+		RecyclingMachine rcm = new RecyclingMachine(1);
+	}
 }
