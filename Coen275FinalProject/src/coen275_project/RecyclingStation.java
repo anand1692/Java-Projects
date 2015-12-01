@@ -1,6 +1,5 @@
 package coen275_project;
 
-
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -8,6 +7,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.TreeMap;
 
 import javax.swing.Box;
@@ -61,6 +61,8 @@ public class RecyclingStation extends JFrame {
     	viewStatsListener = new ViewStatsListener();
     	addMachineListener = new AddMachineListener();
     	
+    	initPersistantMachines();
+    	
     	
 	    contentPane = this.getContentPane();
 	    contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
@@ -95,6 +97,9 @@ public class RecyclingStation extends JFrame {
 	   	contentPane.add(addNewMachineButton);
 	    contentPane.add(scrollPane);
 			
+	    if(numMachines > 0) {
+	    	machineListPanel.updateMachinePanel();
+	    }
 	}
     
 	
@@ -125,6 +130,15 @@ public class RecyclingStation extends JFrame {
 				
 				// Print message if no machines are currently assigned to the station.
 				machineIdLabel = new JLabel("There are no machines currently assigned to this station.");
+				machineIdLabel.setFont(new Font("Arial", Font.PLAIN, 24));
+				c.gridx = 0;
+				c.gridy = 1;
+				c.weightx = 0.4;
+				c.gridheight = 1;
+				c.fill = GridBagConstraints.HORIZONTAL;
+				this.add(machineIdLabel, c);
+			} else {
+				machineIdLabel = new JLabel("");
 				machineIdLabel.setFont(new Font("Arial", Font.PLAIN, 24));
 				c.gridx = 0;
 				c.gridy = 1;
@@ -447,11 +461,42 @@ public class RecyclingStation extends JFrame {
 
 		System.out.println("machineId= "+machineId );
 		System.out.println("numMachines= "+numMachines );
-		
-		
-
-		
 		System.out.println("ERROR-getMachineIndexFromId");
 		return -1;
 	}
+	
+	private void initPersistantMachines() {
+	
+		int numFiles = new File("resources/").list().length;
+		System.out.println("numFiles="+numFiles);
+		
+		String[] filelist = new File("resources/").list();
+		int id = 999999; // if we ever see this value, we'll know something went wrong!
+		
+		for (String filename: filelist) {
+			System.out.println("filename="+filename);
+			
+			// get machine id by removing ".data" file extension
+			if (filename.indexOf(".") > 0)
+			    id = Integer.parseInt(filename.substring(0, filename.lastIndexOf(".")));
+			
+			System.out.println("filename="+filename);
+			System.out.println("machineId="+id);
+			
+			machines[numMachines] = new RecyclingMachine(id);
+			//machines[numMachines].initWithFile(filename);
+			
+			numMachines++;
+			if (id >= machineId)
+				machineId = id + 1;
+			
+			
+			System.out.println("new machineId="+machineId);
+		}
+		System.out.println("numFiles="+numFiles);
+		
+		
+		
+	}
+	
 }
