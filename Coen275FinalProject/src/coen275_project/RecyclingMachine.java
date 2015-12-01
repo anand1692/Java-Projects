@@ -55,12 +55,12 @@ public class RecyclingMachine extends JFrame{
 		// TODO Auto-generated constructor stub
 		itemList = new ItemsInMachine();
 		machineStatus = new MachineStatus(itemList.getRecyclableItems());
-		filename = "coen275_project/resources/" + machineStatus.getMachineId() + ".data";
 	}
 
 	public RecyclingMachine(int id) {
 		this();
 		machineStatus.setMachineId(id);
+		filename = "resources/"+machineStatus.getMachineId() + ".data";
 		content = this.getContentPane();
 		machineInfoLabel = new JLabel("RCM "+ machineStatus.getMachineId() + " : At " + machineStatus.getLocation());
 		JPanel session = getSessionTypePanel();
