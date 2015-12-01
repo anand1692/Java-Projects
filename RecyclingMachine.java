@@ -3,19 +3,17 @@ package goyal.project;
 import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.ItemSelectable;
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.TreeMap;
 
-import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -24,7 +22,6 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.SwingConstants;
 
 public class RecyclingMachine extends JFrame{
 
@@ -40,7 +37,7 @@ public class RecyclingMachine extends JFrame{
 	private Boolean toggle = false, sessionEnded = false;
 	
 	private static final int FRAME_WIDTH = 500;
-	private static final int FRAME_HEIGHT = 500;
+	private static final int FRAME_HEIGHT = 300;
 	Container content;
 	JLabel machineInfoLabel, metricLabel;
 	JRadioButton singleItem, multipleItem, cash, coupons;
@@ -97,8 +94,11 @@ public class RecyclingMachine extends JFrame{
 		public void actionPerformed(ActionEvent e) {
 			if(e.getSource() == singleItem) {
 				sessionType = 1;
+				moneyToBeReturned = (double)0;
+				endSession.setEnabled(false);
 			} else if(e.getSource() == multipleItem) {
 				sessionType = 2;
+				moneyToBeReturned = (double)0;
 				endSession.setEnabled(true);
 				//new frame
 			} else if(e.getSource() == cash) {
@@ -120,6 +120,7 @@ public class RecyclingMachine extends JFrame{
 		singleItem.addActionListener(new RadioButtonHandler());
 		multipleItem.addActionListener(new RadioButtonHandler());
 		
+		singleItem.setSelected(true);
 		panel.setLayout(new FlowLayout());
 		panel.add(singleItem);
 		panel.add(multipleItem);
@@ -162,31 +163,45 @@ public class RecyclingMachine extends JFrame{
 			if(!cashAvail) {
 				couponAvail = returnCouponMoney(moneyToBeReturned);
 				if(couponAvail) {
-					messageDisplay.setText("Sorry cash not available\n. Here's your money in coupons worth "
+					messageDisplay.setText("Sorry cash not available.\n Here's your money in coupons worth "
 							+ df.format(moneyToBeReturned) + " for " + df.format(weightAdded) + " of " + itemTypeSelected
-							+ ".\nThanks for recycling!");
+							+ ".\nThanks for recycling!\n");
 				}else {
-					messageDisplay.setText("Sorry no money available. Thanks for recycling!");
+					if(sessionType == 1)
+						messageDisplay.setText("Sorry no money available. Thanks for recycling!\n");
+					else {
+						messageDisplay.setText("Sorry no money available.\n");
+						messageDisplay.append("Here's your money worth $" + df.format(moneyToBeReturned) + 
+											  "for all items till now.\n");
+						messageDisplay.append(itemTypeSelected + " is not accepted. Thanks for recycling!\n");
+					}
 				}
 			} else {
 				messageDisplay.setText("Here's your money in cash worth $" + df.format(moneyToBeReturned)
 										+ " for " + df.format(weightAdded) + " of " + itemTypeSelected 
-										+ ".\nThanks for recycling!");
+										+ ".\nThanks for recycling!\n");
 			}
 		} else if(modeOfPayment == 2) {
 			couponAvail = returnCouponMoney(moneyToBeReturned);
 			if(!couponAvail) {
 				cashAvail = returnCashMoney(moneyToBeReturned);
 				if(cashAvail) {
-					messageDisplay.setText("Sorry coupon not available\n. Here's your money in cash worth "
+					messageDisplay.setText("Sorry coupon not available.\n Here's your money in cash worth "
 							+ df.format(moneyToBeReturned) + " for " + df.format(weightAdded) + " of " + itemTypeSelected
-							+ ".\nThanks for recycling!");	
+							+ ".\nThanks for recycling!\n");	
 				}else {
-					messageDisplay.setText("Sorry no money available. Thanks for recycling!");
+					if(sessionType == 1)
+						messageDisplay.setText("Sorry no money available. Thanks for recycling!\n");
+					else {
+						messageDisplay.setText("Sorry no money available.\n");
+						messageDisplay.append("Here's your money worth $" + df.format(moneyToBeReturned) + 
+											  " for all items till now.\n");
+						messageDisplay.append(itemTypeSelected + " is not accepted. Thanks for recycling!\n");
+					}
 				}
 			} else {
 				messageDisplay.setText("Here's your money in coupons worth $" + df.format(moneyToBeReturned)
-						+ " for " + df.format(weightAdded) + " of " + itemTypeSelected + ".\nThanks for recycling!");
+						+ " for " + df.format(weightAdded) + " of " + itemTypeSelected + ".\nThanks for recycling!\n");
 			}
 		}
 	}
@@ -200,11 +215,15 @@ public class RecyclingMachine extends JFrame{
 				if(!toggle) {
 					toggle = true;
 					metricLabel.setText("$/Kg");
-					priceDisplay.setText(" " + df.format(convertPriceToPerKg(Double.parseDouble(priceDisplay.getText()))));
+					if(!priceDisplay.getText().equals(""))
+						priceDisplay.setText(" " + 
+									df.format(convertPriceToPerKg(Double.parseDouble(priceDisplay.getText()))));
 				} else {
 					toggle = false;
 					metricLabel.setText("$/lbs");
-					priceDisplay.setText(" " + df.format(convertPriceToPerPound(Double.parseDouble(priceDisplay.getText()))));
+					if(!priceDisplay.getText().equals(""))
+						priceDisplay.setText(" " + 
+									df.format(convertPriceToPerPound(Double.parseDouble(priceDisplay.getText()))));
 				}
 			} else if(e.getSource() == insertItem) {
 				Double weight = Math.random()*10 + 1;
@@ -214,6 +233,12 @@ public class RecyclingMachine extends JFrame{
 				} else {
 					if(!sessionEnded) {
 						moneyToBeReturned += addItemToMachine(itemTypeSelected, weight);
+						if(moneyToBeReturned < machineStatus.getMoneyInMachine() && 
+						   machineStatus.getCouponsInMachine() <= 0) {
+							sessionEnded = true;
+							finalizeTransaction();
+							endSession.setEnabled(false);
+						}
 						messageDisplay.append(df.format(weight) + " of "+ itemTypeSelected + " accepted! Total Money earned = $" 
 												+ df.format(moneyToBeReturned)+"\n");
 					}	
@@ -286,6 +311,7 @@ public class RecyclingMachine extends JFrame{
 		insertItem.addActionListener(new ButtonHandler());
 		endSession.addActionListener(new ButtonHandler());
 		
+		cash.setSelected(true);
 		panel.setLayout(new FlowLayout());
 		panel.add(cash);
 		panel.add(coupons);
@@ -296,26 +322,37 @@ public class RecyclingMachine extends JFrame{
 	
 	private JPanel getDisplayPanel() {
 		JPanel panel = new JPanel();
-		messageDisplay = new JTextArea(4,30);
+		messageDisplay = new JTextArea(4,35);
 		JScrollPane scroll = new JScrollPane(messageDisplay);
 		panel.add(scroll);
 		return panel;
 	}
 	
 	public void modifyMachineSettings(String newLocation, TreeMap<String, Double> newItemList, 
-									  double money, double coupons) {
+									  double money, int coupons) {
 		this.setLocation(newLocation);
 		this.itemList.setItemList(newItemList);
 		this.setMoneyInMachine(money);
 		this.setCouponsInMachine(coupons);
+		
+		machineInfoLabel.setText(("RCM "+ this.machineId + " : At " + this.location));
+		DefaultComboBoxModel model = (DefaultComboBoxModel)itemTypeList.getModel();
+		model = itemList.updateItemList(model, newItemList);
+		itemTypeList.setModel(model);
 	}
 	
 	public void addItemToList(String item, Double price) {
 		this.itemList.addItemToList(item, price);
+		DefaultComboBoxModel model = (DefaultComboBoxModel)itemTypeList.getModel();
+		model = itemList.updateItemList(model, itemList.getItemList());
+		itemTypeList.setModel(model);
 	}
 	
 	public void removeItemFromList(String item) {
 		this.itemList.removeItemFromList(item);
+		DefaultComboBoxModel model = (DefaultComboBoxModel)itemTypeList.getModel();
+		model = itemList.updateItemList(model, itemList.getItemList());
+		itemTypeList.setModel(model);
 	}
 
 	public void modifyPriceOfItem(String item, Double price) {
@@ -358,6 +395,7 @@ public class RecyclingMachine extends JFrame{
 		
 		machineStatus.setMoneyInMachine(machineStatus.getMoneyInMachine() - money);
 		machineStatus.setTotalCashIssued(machineStatus.getTotalCashIssued()+money);
+		machineStatus.setTotalValueIssued(money);
 		return true;
 	}
 	
@@ -367,12 +405,20 @@ public class RecyclingMachine extends JFrame{
 	 * 
 	 * */
 	public boolean returnCouponMoney(double money) {
-		if(money > machineStatus.getCouponsInMachine())
+		if(machineStatus.getCouponsInMachine() <= 0)
 			return false;
 		
-		machineStatus.setCouponsInMachine(machineStatus.getCouponsInMachine() - money);
-		machineStatus.setTotalCouponsIssued(machineStatus.getTotalCouponsIssued() - money);
+		machineStatus.setCouponsInMachine(machineStatus.getCouponsInMachine() - 1);
+		machineStatus.setTotalCouponsIssued(machineStatus.getTotalCouponsIssued() - 1);
+		machineStatus.setTotalValueIssued(money);
 		return true;
+	}
+	
+	public void emptyMachine() {
+		TreeMap<Date, Double> emptyTimestamp = machineStatus.getEmptyTimestamp();
+		emptyTimestamp.put(new Date(), machineStatus.getWeightInMachine());
+		machineStatus.setWeightInMachine(0);
+		machineStatus.setNumberOfTimesEmptied(machineStatus.getNumberOfTimesEmptied() + 1);
 	}
 	
 	/**
@@ -420,7 +466,7 @@ public class RecyclingMachine extends JFrame{
 	/**
 	 * @return the couponsInMachine
 	 */
-	public double getCouponsInMachine() {
+	public int getCouponsInMachine() {
 		return machineStatus.getCouponsInMachine();
 	}
 
@@ -476,7 +522,7 @@ public class RecyclingMachine extends JFrame{
 	/**
 	 * @return the totalCouponsIssued
 	 */
-	public double getTotalCouponsIssued() {
+	public int getTotalCouponsIssued() {
 		return machineStatus.getTotalCouponsIssued();
 	}
 	
@@ -484,7 +530,7 @@ public class RecyclingMachine extends JFrame{
 	 * @return the totalValueIssued
 	 */
 	public double getTotalValueIssued() {
-		return (double)this.getTotalCouponsIssued() + this.getTotalCashIssued();
+		return machineStatus.getTotalValueIssued();
 	}
 
 	/**
@@ -525,7 +571,7 @@ public class RecyclingMachine extends JFrame{
 	/**
 	 * @param couponsInMachine the couponsInMachine to set
 	 */
-	public void setCouponsInMachine(double couponsInMachine) {
+	public void setCouponsInMachine(int couponsInMachine) {
 		this.machineStatus.setCouponsInMachine(couponsInMachine);
 	}
 
