@@ -7,12 +7,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -38,7 +32,7 @@ public class RecyclingMachine extends JFrame{
 	private String itemTypeSelected;
 	private Double pricePerPound, moneyToBeReturned = (double)0, weightAdded;
 	private Boolean toggle = false, sessionEnded = false;
-	private String metricSystem = "lbs";
+	private String filename;
 	
 	private static final int FRAME_WIDTH = 500;
 	private static final int FRAME_HEIGHT = 300;
@@ -61,6 +55,7 @@ public class RecyclingMachine extends JFrame{
 		// TODO Auto-generated constructor stub
 		itemList = new ItemsInMachine();
 		machineStatus = new MachineStatus(itemList.getRecyclableItems());
+		filename = "coen275_project/resources/" + machineStatus.getMachineId() + ".data";
 	}
 
 	public RecyclingMachine(int id) {
@@ -204,6 +199,7 @@ public class RecyclingMachine extends JFrame{
 						+ " for " + df.format(weightAdded) + " lbs of " + itemTypeSelected + ".\nThanks for recycling!\n");
 			}
 		}
+		MachineStatus.serialize(machineStatus, filename);
 	}
 	
 	private class ButtonHandler implements ActionListener {
@@ -339,6 +335,7 @@ public class RecyclingMachine extends JFrame{
 			itemsCollectedByType.put(s, 0);
 		
 		machineStatus.setItemsCollectedByType(itemsCollectedByType);
+		MachineStatus.serialize(machineStatus, filename);
 		
 		machineInfoLabel.setText(("RCM "+ machineStatus.getMachineId() + " : At " + machineStatus.getLocation()));
 		DefaultComboBoxModel model = (DefaultComboBoxModel)itemTypeList.getModel();
@@ -426,6 +423,7 @@ public class RecyclingMachine extends JFrame{
 		machineStatus.setWeightInMachine(0);
 		machineStatus.setNumberOfTimesEmptied(machineStatus.getNumberOfTimesEmptied() + 1);
 		messageDisplay.setText("Machine has been emptied.\n" + weight + " of recycled material has been emptied\n");
+		MachineStatus.serialize(machineStatus, filename);
 	}
 	
 	
@@ -564,6 +562,7 @@ public class RecyclingMachine extends JFrame{
 	 */
 	public void setActive(boolean active) {
 		machineStatus.setActive(active);
+		MachineStatus.serialize(machineStatus, filename);
 	}
 
 	/**
