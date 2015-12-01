@@ -60,7 +60,7 @@ public class RecyclingMachine extends JFrame{
 	public RecyclingMachine(int id) {
 		this();
 		machineStatus.setMachineId(id);
-		filename = "resources/"+machineStatus.getMachineId() + ".ser";
+		filename = "resources/"+machineStatus.getMachineId() + ".data";
 		content = this.getContentPane();
 		machineInfoLabel = new JLabel("RCM "+ machineStatus.getMachineId() + " : At " + machineStatus.getLocation());
 		JPanel session = getSessionTypePanel();
