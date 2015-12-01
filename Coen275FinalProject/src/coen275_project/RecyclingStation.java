@@ -33,7 +33,8 @@ public class RecyclingStation extends JFrame {
 	
 	static AddMachineFrame addMachineFrame;
 	static ModifyMachineFrame modifyMachineFrame;
-		
+	static StatsFrame statsFrame;
+	
 	// numMachines is total number of machines; machineId is the latest, unused ID number. They will be the same until a machine is removed.
 	private int numMachines, machineId;  
 	
@@ -240,6 +241,7 @@ public class RecyclingStation extends JFrame {
 				viewStatsButton = new JButton("View Stats");
 				viewStatsButton.setToolTipText("View statistics about this machine");;
 				viewStatsButton.addActionListener(viewStatsListener);
+				viewStatsButton.setActionCommand(""+(i/2));
 				c.gridx = 5;
 				c.gridy = i+1;
 				c.gridheight = 2;
@@ -344,6 +346,17 @@ public class RecyclingStation extends JFrame {
 	class ViewStatsListener implements ActionListener {
 		   public void actionPerformed(ActionEvent event) {
 
+			   int machineIndex = Integer.parseInt(event.getActionCommand());
+			   int id = machines[machineIndex].getMachineId();
+			   
+			   statsFrame = new StatsFrame(id);
+			   statsFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			   statsFrame.setTitle("Stats for Machine " + machines[machineIndex].getMachineId());
+			   statsFrame.validate();
+			   statsFrame.pack();
+			   statsFrame.setVisible(true);
+			   ProjectLauncher.recyclingStationFrame.setVisible(false);
+			   
 			   informationDisplay.append("View Stats button pressed" + "\n");
 		   }		
 	}
