@@ -7,7 +7,7 @@ import java.util.TreeMap;
 public class MachineStatus {
 	
 	double moneyInMachine; 	// in $
-	double couponsInMachine;	// worth in $
+	int couponsInMachine;	// worth in $
 	double weightInMachine;	// in tons
 	private TreeMap<Date, Double> emptyTimestamp;
 	int numberOfTimesEmptied;
@@ -15,18 +15,20 @@ public class MachineStatus {
 	int totalItemsCollected;
 	private TreeMap<String, Integer> itemsCollectedByType;
 	double totalCashIssued;
-	double totalCouponsIssued;
+	int totalCouponsIssued;
+	double totalValueIssued;
 	
 	public MachineStatus(ArrayList<String> recyclableItems) {
 		// TODO Auto-generated constructor stub
-		moneyInMachine = 1000;
-		couponsInMachine = 1000;
+		moneyInMachine = 200;
+		couponsInMachine = 2;
 		weightInMachine = 0;
 		numberOfTimesEmptied = 0;
 		weightCapacity = 1000; 
 		totalItemsCollected = 0;
 		totalCashIssued = 0;
 		totalCouponsIssued = 0;
+		totalValueIssued = 0;
 		
 		emptyTimestamp = new TreeMap<Date, Double>();
 		
@@ -46,7 +48,7 @@ public class MachineStatus {
 	/**
 	 * @return the couponsInMachine
 	 */
-	public double getCouponsInMachine() {
+	public int getCouponsInMachine() {
 		return couponsInMachine;
 	}
 
@@ -102,7 +104,7 @@ public class MachineStatus {
 	/**
 	 * @return the totalCouponsIssued
 	 */
-	public double getTotalCouponsIssued() {
+	public int getTotalCouponsIssued() {
 		return totalCouponsIssued;
 	}
 	
@@ -110,7 +112,7 @@ public class MachineStatus {
 	 * @return the totalValueIssued
 	 */
 	public double getTotalValueIssued() {
-		return (double)totalCouponsIssued + totalCashIssued;
+		return totalValueIssued;
 	}
 	
 	/**
@@ -123,7 +125,7 @@ public class MachineStatus {
 	/**
 	 * @param couponsInMachine the couponsInMachine to set
 	 */
-	public void setCouponsInMachine(double couponsInMachine) {
+	public void setCouponsInMachine(int couponsInMachine) {
 		this.couponsInMachine = couponsInMachine;
 	}
 
@@ -181,7 +183,11 @@ public class MachineStatus {
 	/**
 	 * @param totalCouponsIssued the totalCouponsIssued to set
 	 */
-	public void setTotalCouponsIssued(double totalCouponsIssued) {
+	public void setTotalCouponsIssued(int totalCouponsIssued) {
 		this.totalCouponsIssued = totalCouponsIssued;
+	}
+	
+	public void setTotalValueIssued(double newValue) {
+		this.totalValueIssued += newValue;
 	}
 }
