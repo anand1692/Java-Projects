@@ -26,8 +26,10 @@ public class MachineStatus implements Serializable {
 	private double totalCashIssued;
 	private int totalCouponsIssued;
 	private double totalValueIssued;
+	private TreeMap<String, Double> itemsInList;
+	private ArrayList<String> recyclableItemList;
 	
-	public MachineStatus(ArrayList<String> recyclableItems) {
+	public MachineStatus(ArrayList<String> recyclableItems, TreeMap<String, Double> itemList) {
 		// TODO Auto-generated constructor stub
 		machineId = 0;
 		location = "University";
@@ -48,6 +50,8 @@ public class MachineStatus implements Serializable {
 		for(String s: recyclableItems) {
 			itemsCollectedByType.put(s, 0);
 		}
+		itemsInList = itemList;
+		recyclableItemList = recyclableItems;
 	}
 	
 	public static void serialize(MachineStatus msOb, String filename) {
@@ -181,6 +185,16 @@ public class MachineStatus implements Serializable {
 		return totalValueIssued;
 	}
 	
+	
+	public TreeMap<String, Double> getItemsInList() {
+		return itemsInList;
+	}
+
+
+	public ArrayList<String> getRecyclableItemList() {
+		return recyclableItemList;
+	}
+
 	/**
 	 * @param machineId the machineId to set
 	 */
@@ -283,4 +297,13 @@ public class MachineStatus implements Serializable {
 	public void setTotalValueIssued(double newValue) {
 		this.totalValueIssued += newValue;
 	}
+	
+	public void setItemsInList(TreeMap<String, Double> itemsInList) {
+		this.itemsInList = itemsInList;
+	}
+
+	public void setRecyclableItemList(ArrayList<String> recyclableItemList) {
+		this.recyclableItemList = recyclableItemList;
+	}
+
 }

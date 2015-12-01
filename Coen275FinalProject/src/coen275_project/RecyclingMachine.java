@@ -27,12 +27,12 @@ public class RecyclingMachine extends JFrame{
 
 	private ItemsInMachine itemList;
 	private MachineStatus machineStatus;
+	private String filename;
 	
 	private int sessionType = 1, modeOfPayment = 1;
 	private String itemTypeSelected;
 	private Double pricePerPound, moneyToBeReturned = (double)0, weightAdded;
 	private Boolean toggle = false, sessionEnded = false;
-	private String filename;
 	
 	private static final int FRAME_WIDTH = 500;
 	private static final int FRAME_HEIGHT = 300;
@@ -54,13 +54,13 @@ public class RecyclingMachine extends JFrame{
 	public RecyclingMachine() {
 		// TODO Auto-generated constructor stub
 		itemList = new ItemsInMachine();
-		machineStatus = new MachineStatus(itemList.getRecyclableItems());
+		machineStatus = new MachineStatus(itemList.getRecyclableItems(), itemList.getItemList());
 	}
 
 	public RecyclingMachine(int id) {
 		this();
 		machineStatus.setMachineId(id);
-		filename = "resources/"+machineStatus.getMachineId() + ".ser";
+		filename = "resources/"+machineStatus.getMachineId() + ".data";
 		content = this.getContentPane();
 		machineInfoLabel = new JLabel("RCM "+ machineStatus.getMachineId() + " : At " + machineStatus.getLocation());
 		JPanel session = getSessionTypePanel();
@@ -83,6 +83,12 @@ public class RecyclingMachine extends JFrame{
 
 		// center the mainFrame on screen
 		this.setLocationRelativeTo(null);
+	}
+	
+	public void initWithFileName(String filename) {
+		machineStatus = MachineStatus.deSerialize(filename);
+		itemList.setItemList(machineStatus.getItemsInList());
+		itemList.setRecyclableItems(machineStatus.getRecyclableItemList());
 	}
 	
 	private class RadioButtonHandler implements ActionListener {
@@ -335,6 +341,8 @@ public class RecyclingMachine extends JFrame{
 			itemsCollectedByType.put(s, 0);
 		
 		machineStatus.setItemsCollectedByType(itemsCollectedByType);
+		machineStatus.setItemsInList(newItemList);
+		machineStatus.setRecyclableItemList(itemList.getRecyclableItems());
 		MachineStatus.serialize(machineStatus, filename);
 		
 		machineInfoLabel.setText(("RCM "+ machineStatus.getMachineId() + " : At " + machineStatus.getLocation()));
@@ -345,6 +353,10 @@ public class RecyclingMachine extends JFrame{
 	
 	public void addItemToList(String item, Double price) {
 		this.itemList.addItemToList(item, price);
+		machineStatus.setItemsInList(itemList.getItemList());
+		machineStatus.setRecyclableItemList(itemList.getRecyclableItems());
+		MachineStatus.serialize(machineStatus, filename);
+		
 		DefaultComboBoxModel model = (DefaultComboBoxModel)itemTypeList.getModel();
 		model = itemList.updateItemList(model, itemList.getItemList());
 		itemTypeList.setModel(model);
@@ -352,6 +364,10 @@ public class RecyclingMachine extends JFrame{
 	
 	public void removeItemFromList(String item) {
 		this.itemList.removeItemFromList(item);
+		machineStatus.setItemsInList(itemList.getItemList());
+		machineStatus.setRecyclableItemList(itemList.getRecyclableItems());
+		MachineStatus.serialize(machineStatus, filename);
+		
 		DefaultComboBoxModel model = (DefaultComboBoxModel)itemTypeList.getModel();
 		model = itemList.updateItemList(model, itemList.getItemList());
 		itemTypeList.setModel(model);
@@ -359,6 +375,8 @@ public class RecyclingMachine extends JFrame{
 
 	public void modifyPriceOfItem(String item, Double price) {
 		this.itemList.modifyPriceOfItem(item, price);
+		machineStatus.setItemsInList(itemList.getItemList());
+		MachineStatus.serialize(machineStatus, filename);
 	}
 	
 	/*
