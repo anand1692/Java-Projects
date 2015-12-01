@@ -466,34 +466,25 @@ public class RecyclingStation extends JFrame {
 	}
 	
 	private void initPersistantMachines() {
-	
-		int numFiles = new File("resources/").list().length;
-		System.out.println("numFiles="+numFiles);
-		
+			
 		String[] filelist = new File("resources/").list();
 		int id = 999999; // if we ever see this value, we'll know something went wrong!
 		
 		for (String filename: filelist) {
-			System.out.println("filename="+filename);
 			
 			// get machine id by removing ".data" file extension
 			if (filename.indexOf(".") > 0)
 			    id = Integer.parseInt(filename.substring(0, filename.lastIndexOf(".")));
 			
-			System.out.println("filename="+filename);
-			System.out.println("machineId="+id);
-			
 			machines[numMachines] = new RecyclingMachine(id);
-			//machines[numMachines].initWithFile(filename);
+			machines[numMachines].initWithFileName("resources/"+filename);
+			machines[numMachines].validate();
 			
 			numMachines++;
 			if (id >= machineId)
 				machineId = id + 1;
 			
-			
-			System.out.println("new machineId="+machineId);
 		}
-		System.out.println("numFiles="+numFiles);
 		
 		
 		

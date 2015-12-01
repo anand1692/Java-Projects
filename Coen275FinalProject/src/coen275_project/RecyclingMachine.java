@@ -89,6 +89,10 @@ public class RecyclingMachine extends JFrame{
 		machineStatus = MachineStatus.deSerialize(filename);
 		itemList.setItemList(machineStatus.getItemsInList());
 		itemList.setRecyclableItems(machineStatus.getRecyclableItemList());
+		machineInfoLabel.setText(("RCM "+ machineStatus.getMachineId() + " : At " + machineStatus.getLocation()));
+		DefaultComboBoxModel model = (DefaultComboBoxModel)itemTypeList.getModel();
+		model = itemList.updateItemList(model, itemList.getItemList());
+		itemTypeList.setModel(model);
 	}
 	
 	private class RadioButtonHandler implements ActionListener {
@@ -611,7 +615,4 @@ public class RecyclingMachine extends JFrame{
 		this.machineStatus.setWeightCapacity(weightCapacity);
 	}
 	
-	public static void main(String[] args) {
-		RecyclingMachine rcm = new RecyclingMachine(1);
-	}
 }
