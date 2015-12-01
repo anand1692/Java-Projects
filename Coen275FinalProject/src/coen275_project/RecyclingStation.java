@@ -45,7 +45,7 @@ public class RecyclingStation extends JFrame {
     private MachineListPanel machineListPanel;
 	private Container contentPane;
 	
-	private ActionListener activateListener, removeListener, modifyListener, viewStatsListener, addMachineListener;  
+	private ActionListener activateListener, removeListener, modifyListener, emptyListener, viewStatsListener, addMachineListener;  
     
     public RecyclingStation() {
 	
@@ -56,6 +56,7 @@ public class RecyclingStation extends JFrame {
     	activateListener = new ToggleActivationListener();
     	removeListener = new RemoveMachineListener();
     	modifyListener = new ModifyMachineListener();
+    	emptyListener = new EmptyMachineListener();
     	viewStatsListener = new ViewStatsListener();
     	addMachineListener = new AddMachineListener();
     	
@@ -100,7 +101,7 @@ public class RecyclingStation extends JFrame {
 	public class MachineListPanel extends JPanel {
 	
 		private JLabel titleLabel, machineIdLabel, machineLocationLabel;
-		private JButton activationButton, removeMachineButton, modifyMachineButton, viewStatsButton;
+		private JButton activationButton, removeMachineButton, modifyMachineButton, emptyMachineButton, viewStatsButton;
 		
 		private GridBagConstraints c;
 		
@@ -188,7 +189,6 @@ public class RecyclingStation extends JFrame {
 			
 				c.fill = GridBagConstraints.CENTER;
 				
-				//c.insets = new Insets(0, 10, 10, 0);
 				activationButton = new JButton();
 				
 				if(machines[i/2].isActive()) {
@@ -204,7 +204,7 @@ public class RecyclingStation extends JFrame {
 				c.gridx = 1;
 				c.gridy = i+1;
 				c.gridheight = 2;
-				c.weightx = 0.15;
+				c.weightx = 0.12;
 				this.add(activationButton, c);
 			
 				removeMachineButton = new JButton("Remove");
@@ -214,7 +214,7 @@ public class RecyclingStation extends JFrame {
 				c.gridx = 2;
 				c.gridy = i+1;
 				c.gridheight = 2;
-				c.weightx = 0.15;
+				c.weightx = 0.12;
 				this.add(removeMachineButton, c);
 				
 				modifyMachineButton = new JButton("Modify");
@@ -224,16 +224,26 @@ public class RecyclingStation extends JFrame {
 				c.gridx = 3;
 				c.gridy = i+1;
 				c.gridheight = 2;
-				c.weightx = 0.15;
+				c.weightx = 0.12;
 				this.add(modifyMachineButton, c);
+				
+				emptyMachineButton = new JButton("Empty");
+				emptyMachineButton.setToolTipText("Empty contents from machine");;
+				emptyMachineButton.addActionListener(emptyListener);
+				emptyMachineButton.setActionCommand(""+(i/2));
+				c.gridx = 4;
+				c.gridy = i+1;
+				c.gridheight = 2;
+				c.weightx = 0.12;
+				this.add(emptyMachineButton, c);
 				
 				viewStatsButton = new JButton("View Stats");
 				viewStatsButton.setToolTipText("View statistics about this machine");;
 				viewStatsButton.addActionListener(viewStatsListener);
-				c.gridx = 4;
+				c.gridx = 5;
 				c.gridy = i+1;
 				c.gridheight = 2;
-				c.weightx = 0.15;
+				c.weightx = 0.12;
 				this.add(viewStatsButton, c);
 			}
 		}
@@ -256,14 +266,14 @@ public class RecyclingStation extends JFrame {
 				   // deactivate machine
 				   machines[machineIndex].setActive(false);
 				   machines[machineIndex].setVisible(false);
-				   informationDisplay.append("Deactivated machine " + id + "\n");
+				   informationDisplay.append("Deactivated Machine " + id + "\n");
 			   
 			   } else {
 				   
 				   // activate machine
 				   machines[machineIndex].setActive(true);
 				   machines[machineIndex].setVisible(true);
-				   informationDisplay.append("Activated machine " + id + "\n");
+				   informationDisplay.append("Activated Machine " + id + "\n");
 			   }
 			   
 			   machineListPanel.updateMachinePanel();
@@ -272,7 +282,7 @@ public class RecyclingStation extends JFrame {
 		   }		
 	}
 	
-	// Handles "Remover" button for machines
+	// Handles "Remove" button for machines
 	class RemoveMachineListener implements ActionListener {
 		   public void actionPerformed(ActionEvent event) {
 			 
@@ -316,12 +326,25 @@ public class RecyclingStation extends JFrame {
 			   ProjectLauncher.recyclingStationFrame.setVisible(false);
 		   }		
 	}
+
+	// Handles "Empty Machine" button for machines
+	class EmptyMachineListener implements ActionListener {
+		   public void actionPerformed(ActionEvent event) {
+			   
+			   int machineIndex = Integer.parseInt(event.getActionCommand());
+			   int id = machines[machineIndex].getMachineId();
+
+			   machines[machineIndex].emptyMachine();
+			   
+			   informationDisplay.append("Machine " + id + " emptied" + "\n");
+		   }		
+	}
 	
 	// Handles "View Stats" button for machines
 	class ViewStatsListener implements ActionListener {
 		   public void actionPerformed(ActionEvent event) {
 
-			   System.out.println("view stats button pressed");
+			   informationDisplay.append("View Stats button pressed" + "\n");
 		   }		
 	}
 	
@@ -330,8 +353,6 @@ public class RecyclingStation extends JFrame {
 		   public void actionPerformed(ActionEvent event) {
 			   			   
 			   if (numMachines < MAX_NUM_MACHINES) {
-				   				   
-//				   machines[numMachines] = new RecyclingMachine(machineId);
 				   
 				   addMachineFrame = new AddMachineFrame(machineId);
 				   addMachineFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -354,9 +375,8 @@ public class RecyclingStation extends JFrame {
 		
 		machines[numMachines] = new RecyclingMachine(machineId);
 		machines[numMachines].modifyMachineSettings(machineLocation, itemsAndPrices, money, numCoupons);
-//		setNewMachineSettings(machineID, machineLocation, itemsAndPrices, money, numCoupons);
 
-		informationDisplay.append("add machine " + machineId + "\n");
+		informationDisplay.append("Added Machine " + machineId + "\n");
 	   
 		// We'll create a new addMachineFrame when the time is right. For now, we are done with this one and can kill it.
 		addMachineFrame.dispose();
@@ -366,7 +386,6 @@ public class RecyclingStation extends JFrame {
 		machines[numMachines].setLocationRelativeTo(null);
 		machines[numMachines].validate();
 		machines[numMachines].setTitle("Recycling Machine " + machineId);
-//		machines[numMachines].pack();
 		machines[numMachines].setVisible(true);
 	   			   
 		numMachines++;

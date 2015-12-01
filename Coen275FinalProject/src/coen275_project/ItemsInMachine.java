@@ -69,6 +69,7 @@ public class ItemsInMachine {
 		this.setRecyclableItems(newItemList);
 	}
 	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public DefaultComboBoxModel updateItemList(DefaultComboBoxModel model, TreeMap<String, Double> itemList) {
 		model.removeAllElements();
 		ArrayList<String> newItemList = new ArrayList<String>();
