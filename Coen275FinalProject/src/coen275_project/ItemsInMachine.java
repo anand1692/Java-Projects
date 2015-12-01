@@ -4,13 +4,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.TreeMap;
 
+import javax.swing.DefaultComboBoxModel;
+
 public class ItemsInMachine {
 
 	private ArrayList<String> recyclableItems;
 	private TreeMap<String, Double> itemList; // price per pound
 	
 	public ItemsInMachine() {
-		// TODO Auto-generated constructor stub
+
 		String[] items = {"Aluminium", "Glass", "Plastic", "Paper", "Steel"};
 		recyclableItems = new ArrayList<String>();
 		Collections.addAll(recyclableItems, items);
@@ -54,19 +56,32 @@ public class ItemsInMachine {
 	 * @param itemList the itemList to set
 	 */
 	public void setItemList(TreeMap<String, Double> itemList) {
-		TreeMap<String, Double> currentItems = this.getItemList();
+		TreeMap<String, Double> currentItems = new TreeMap<String, Double>();
 		for(String s: itemList.keySet()) {
-			if(!currentItems.containsKey(s))
-				currentItems.put(s, itemList.get(s));
+			currentItems.put(s, itemList.get(s));
 		}
 		this.itemList = itemList;
 		
-		ArrayList<String> newItemList = this.getRecyclableItems();
+		ArrayList<String> newItemList = new ArrayList<String>();
 		for(String s:itemList.keySet()) {
-			if(!newItemList.contains(s))
 				newItemList.add(s);
 		}
 		this.setRecyclableItems(newItemList);
+	}
+	
+	public DefaultComboBoxModel updateItemList(DefaultComboBoxModel model, TreeMap<String, Double> itemList) {
+		model.removeAllElements();
+		ArrayList<String> newItemList = new ArrayList<String>();
+		
+		model.addElement("Default");
+		
+		for(String s:itemList.keySet()) {
+			model.addElement(s);
+			newItemList.add(s);
+		}
+		
+		this.setRecyclableItems(newItemList);
+		return model;
 	}
 	
 	public void addItemToList(String item, Double price) {

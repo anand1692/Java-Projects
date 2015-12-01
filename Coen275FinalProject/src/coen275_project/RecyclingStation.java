@@ -24,6 +24,9 @@ import javax.swing.SwingConstants;
 @SuppressWarnings("serial")
 public class RecyclingStation extends JFrame {
 
+	private static final int MACHINE_WIDTH = 500;
+	private static final int MACHINE_HEIGHT = 300;
+	
 	private static final int MAX_NUM_MACHINES = 10;
 
 	private RecyclingMachine[] machines;
@@ -328,7 +331,7 @@ public class RecyclingStation extends JFrame {
 			   			   
 			   if (numMachines < MAX_NUM_MACHINES) {
 				   				   
-				   machines[numMachines] = new RecyclingMachine(machineId);
+//				   machines[numMachines] = new RecyclingMachine(machineId);
 				   
 				   addMachineFrame = new AddMachineFrame(machineId);
 				   addMachineFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -349,6 +352,7 @@ public class RecyclingStation extends JFrame {
 	// Called from addMachineFrame. This relays the information filled in the addMachineFrame to the newly created RecyclingMachine 
 	public void addNewMachine(int machineID, String machineLocation, TreeMap<String, Double> itemsAndPrices, double money, int numCoupons) {
 		
+		machines[numMachines] = new RecyclingMachine(machineId);
 		machines[numMachines].modifyMachineSettings(machineLocation, itemsAndPrices, money, numCoupons);
 //		setNewMachineSettings(machineID, machineLocation, itemsAndPrices, money, numCoupons);
 
@@ -358,9 +362,11 @@ public class RecyclingStation extends JFrame {
 		addMachineFrame.dispose();
 		
 		// make the new machine's GUI pop up.
+		machines[numMachines].setSize(MACHINE_WIDTH, MACHINE_HEIGHT);
+		machines[numMachines].setLocationRelativeTo(null);
 		machines[numMachines].validate();
 		machines[numMachines].setTitle("Recycling Machine " + machineId);
-		machines[numMachines].pack();
+//		machines[numMachines].pack();
 		machines[numMachines].setVisible(true);
 	   			   
 		numMachines++;
