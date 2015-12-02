@@ -72,6 +72,7 @@ public class ItemsInMachine {
 	public DefaultComboBoxModel updateItemList(DefaultComboBoxModel model, TreeMap<String, Double> itemList) {
 		model.removeAllElements();
 		ArrayList<String> newItemList = new ArrayList<String>();
+		model.addElement("Default");
 		for(String s:itemList.keySet()) {
 			model.addElement(s);
 			newItemList.add(s);

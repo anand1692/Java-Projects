@@ -439,12 +439,14 @@ public class RecyclingMachine extends JFrame{
 	}
 	
 	public void emptyMachine() {
+		DecimalFormat df = new DecimalFormat();
+		df.setMaximumFractionDigits(2);
 		TreeMap<Date, Double> emptyTimestamp = machineStatus.getEmptyTimestamp();
 		Double weight = machineStatus.getWeightInMachine();
 		emptyTimestamp.put(new Date(), weight);
 		machineStatus.setWeightInMachine(0);
 		machineStatus.setNumberOfTimesEmptied(machineStatus.getNumberOfTimesEmptied() + 1);
-		messageDisplay.setText("Machine has been emptied.\n" + weight + " of recycled material has been emptied\n");
+		messageDisplay.setText("Machine has been emptied.\n" + df.format(weight) + " of recycled material has been emptied\n");
 		MachineStatus.serialize(machineStatus, filename);
 	}
 	
