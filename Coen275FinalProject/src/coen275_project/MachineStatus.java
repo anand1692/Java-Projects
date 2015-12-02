@@ -10,15 +10,16 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.TreeMap;
 
+@SuppressWarnings("serial")
 public class MachineStatus implements Serializable {
 	
 	private int machineId;
 	private String location;
 	private boolean active;
 	private double moneyInMachine; 	// in $
-	private int couponsInMachine;	// worth in $
-	private double weightInMachine;	// in tons
-	private TreeMap<Date, Double> emptyTimestamp;
+	private int couponsInMachine;	
+	private double weightInMachine;	// in pounds
+	private TreeMap<Date, Double> emptyTimestamp;  // date and weight emptied
 	private int numberOfTimesEmptied;
 	private double weightCapacity; 	// in pounds
 	private int totalItemsCollected;
@@ -30,7 +31,7 @@ public class MachineStatus implements Serializable {
 	private ArrayList<String> recyclableItemList;
 	
 	public MachineStatus(ArrayList<String> recyclableItems, TreeMap<String, Double> itemList) {
-		// TODO Auto-generated constructor stub
+
 		machineId = 0;
 		location = "University";
 		active = true;

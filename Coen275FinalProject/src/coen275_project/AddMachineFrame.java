@@ -102,7 +102,7 @@ public class AddMachineFrame extends JFrame implements ActionListener {
 
 	    	// Entered values appear to be okay
 		    errorMsgLabel.setText("");
-	    	ProjectLauncher.recyclingStationFrame.addNewMachine(machineId, location, itemsAndPrices, money, coupons);
+		    Admin.recyclingStationFrame.addNewMachine(machineId, location, itemsAndPrices, money, coupons);
 	    }
 	    
     }	

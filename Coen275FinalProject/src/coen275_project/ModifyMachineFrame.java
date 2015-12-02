@@ -108,7 +108,7 @@ public class ModifyMachineFrame extends JFrame implements ActionListener {
 
 	    	// Entered values appear to be okay
 		    errorMsgLabel.setText("");
-		    ProjectLauncher.recyclingStationFrame.modifyMachine(machineId, location, itemsAndPrices, money, coupons);
+		    Admin.recyclingStationFrame.modifyMachine(machineId, location, itemsAndPrices, money, coupons);
 	    }
 	}
 	

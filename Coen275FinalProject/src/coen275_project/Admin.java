@@ -16,7 +16,9 @@ import javax.swing.JTextField;
 
 @SuppressWarnings("serial")
 public class Admin extends JFrame implements ActionListener {
-
+	
+	static RecyclingStation recyclingStationFrame;
+	
 	private JLabel titleLabel, usernameLabel, passwordLabel, errMsgLabel;
 	private JTextField usernameField;//, passwordField;
 	private JPasswordField passwordField;
@@ -78,10 +80,14 @@ public class Admin extends JFrame implements ActionListener {
 
     		// log in was correct
     		ProjectLauncher.adminFrame.dispose();
-        	
-        	ProjectLauncher.recyclingStationFrame.validate();
-        	ProjectLauncher.recyclingStationFrame.pack();
-        	ProjectLauncher.recyclingStationFrame.setVisible(true);
+    		recyclingStationFrame = new RecyclingStation();
+    		
+    		recyclingStationFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    		recyclingStationFrame.setTitle("Recycling Monitoring Station (RMOS)");
+    		
+        	recyclingStationFrame.validate();
+        	recyclingStationFrame.pack();
+        	recyclingStationFrame.setVisible(true);
 
     	} else {
     		

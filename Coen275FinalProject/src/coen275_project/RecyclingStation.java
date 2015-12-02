@@ -8,6 +8,7 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.Date;
 import java.util.TreeMap;
 
 import javax.swing.Box;
@@ -294,7 +295,7 @@ public class RecyclingStation extends JFrame {
 			   
 			   machineListPanel.updateMachinePanel();
 			   machineListPanel.validate();
-			   ProjectLauncher.recyclingStationFrame.pack();
+			   Admin.recyclingStationFrame.pack();
 		   }		
 	}
 	
@@ -321,7 +322,7 @@ public class RecyclingStation extends JFrame {
 			   // redraw the RecyclingStation's GUI reflecting the removal
 			   machineListPanel.updateMachinePanel();
 			   machineListPanel.validate();
-			   ProjectLauncher.recyclingStationFrame.pack();
+			   Admin.recyclingStationFrame.pack();
 			   
 			   informationDisplay.append("Removed machine " + id + "\n");
 		   }		
@@ -339,7 +340,7 @@ public class RecyclingStation extends JFrame {
 			   modifyMachineFrame.validate();
 			   modifyMachineFrame.pack();
 			   modifyMachineFrame.setVisible(true);
-			   ProjectLauncher.recyclingStationFrame.setVisible(false);
+			   Admin.recyclingStationFrame.setVisible(false);
 		   }		
 	}
 
@@ -362,17 +363,60 @@ public class RecyclingStation extends JFrame {
 
 			   int machineIndex = Integer.parseInt(event.getActionCommand());
 			   int id = machines[machineIndex].getMachineId();
+			   MachineStatus status = machines[machineIndex].getMachineStatus();
 			   
-			   statsFrame = new StatsFrame(id);
+			   statsFrame = new StatsFrame(status);
 			   statsFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			   statsFrame.setTitle("Stats for Machine " + machines[machineIndex].getMachineId());
 			   statsFrame.validate();
 			   statsFrame.pack();
 			   statsFrame.setVisible(true);
-			   ProjectLauncher.recyclingStationFrame.setVisible(false);
+			   Admin.recyclingStationFrame.setVisible(false);
 			   
-			   informationDisplay.append("View Stats button pressed" + "\n");
+			   informationDisplay.append("Viewed stats for machine " + id + "\n");
 		   }		
+	}
+	
+	// handles the "go back" button after admin views the stats for a machine
+	public void doneViewingStats () {
+		
+		statsFrame.dispose();
+		Admin.recyclingStationFrame.setVisible(true);
+	}
+	
+	// Determine the most used machine the given number of days (previous to today). "most used" machine is the 
+	// RecyclingMachine that has been emptied the most in the given number of days.
+	public void getMostUsedMachine(int numDays) {
+
+		Date today = new Date();
+		Date beginTime = ProjectLauncher.setToNDaysAgo(today, numDays);
+		
+		int mostNumTimesEmptied = 0;
+		int timesEmptied = 0;
+		TreeMap<Date, Double> emptyTimestamps = null;
+		
+		for(int i = 0; i < numMachines; i++) {
+		
+			timesEmptied = 0;
+			
+			// get map of all times emptied with timestamps
+			emptyTimestamps = machines[i].getMachineStatus().getEmptyTimestamp();
+			
+			for(Date date : emptyTimestamps.keySet()) {
+				
+				if(date.after(beginTime)) {
+				
+					timesEmptied++;
+				}
+			}
+			
+			if (timesEmptied > mostNumTimesEmptied)	{
+				
+				mostNumTimesEmptied = timesEmptied;
+				statsFrame.mostUsedId = machines[i].getMachineStatus().getMachineId();
+				statsFrame.mostUsedLocation = machines[i].getMachineStatus().getLocation();
+			}
+		}
 	}
 	
 	// Handles "Add New Machine" button for machines
@@ -387,7 +431,7 @@ public class RecyclingStation extends JFrame {
 				   addMachineFrame.validate();
 				   addMachineFrame.pack();
 				   addMachineFrame.setVisible(true);
-				   ProjectLauncher.recyclingStationFrame.setVisible(false);
+				   Admin.recyclingStationFrame.setVisible(false);
 				   				   
 			   } else {
 				   
@@ -421,8 +465,8 @@ public class RecyclingStation extends JFrame {
 		// redraw the RecyclingStation's GUI with the new machine
 		machineListPanel.updateMachinePanel();
 		machineListPanel.validate();
-		ProjectLauncher.recyclingStationFrame.pack();
-		ProjectLauncher.recyclingStationFrame.setVisible(true);
+		Admin.recyclingStationFrame.pack();
+		Admin.recyclingStationFrame.setVisible(true);
 		
 		return;
 	}
@@ -439,8 +483,8 @@ public class RecyclingStation extends JFrame {
 		// redraw the RecyclingStation's GUI with the new machine
 		machineListPanel.updateMachinePanel();
 		machineListPanel.validate();
-		ProjectLauncher.recyclingStationFrame.pack();
-		ProjectLauncher.recyclingStationFrame.setVisible(true);
+		Admin.recyclingStationFrame.pack();
+		Admin.recyclingStationFrame.setVisible(true);
 		
 		informationDisplay.append("Modified machine " + id + "\n");
 	}

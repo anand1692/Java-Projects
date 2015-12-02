@@ -23,6 +23,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+@SuppressWarnings("serial")
 public class RecyclingMachine extends JFrame{
 
 	private ItemsInMachine itemList;
@@ -52,7 +53,6 @@ public class RecyclingMachine extends JFrame{
 //	}
 	
 	public RecyclingMachine() {
-		// TODO Auto-generated constructor stub
 		itemList = new ItemsInMachine();
 		machineStatus = new MachineStatus(itemList.getRecyclableItems(), itemList.getItemList());
 	}
@@ -78,7 +78,7 @@ public class RecyclingMachine extends JFrame{
 		// Set the size of the frame
 		this.setSize(FRAME_WIDTH, FRAME_HEIGHT);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setTitle("Recycling Machine");
+		this.setTitle("Recycling Machine "+machineStatus.getMachineId());
 		this.setVisible(true);
 
 		// center the mainFrame on screen
@@ -433,7 +433,7 @@ public class RecyclingMachine extends JFrame{
 			return false;
 		
 		machineStatus.setCouponsInMachine(machineStatus.getCouponsInMachine() - 1);
-		machineStatus.setTotalCouponsIssued(machineStatus.getTotalCouponsIssued() - 1);
+		machineStatus.setTotalCouponsIssued(machineStatus.getTotalCouponsIssued() + 1);
 		machineStatus.setTotalValueIssued(money);
 		return true;
 	}
