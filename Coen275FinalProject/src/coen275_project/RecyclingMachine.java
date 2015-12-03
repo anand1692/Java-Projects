@@ -82,7 +82,7 @@ public class RecyclingMachine extends JFrame{
 		
 		machineInfoLabel.setForeground(Color.decode("#6ed3cf"));
 		content.setLayout(new FlowLayout());
-		content.setBackground(Color.decode("#7d4627")); // background light blue
+		content.setBackground(Color.decode("#7d4627")); // background light brown
 		session.setBackground(Color.decode("#edd9c0"));
 		insertItem.setBackground(Color.decode("#edd9c0"));
 		moneyBack.setBackground(Color.decode("#edd9c0"));

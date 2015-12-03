@@ -42,13 +42,16 @@ public class Admin extends JFrame implements ActionListener {
 	    usernameLabel = new JLabel("username: ");
 	    usernameField = new JTextField(20);
 	    usernameField.setEditable(true);	    
+	    usernamePanel.setBackground(Color.decode("#edd9c0")); // background light brown
 	    usernamePanel.add(usernameLabel);
 	    usernamePanel.add(usernameField);
+	    
 	    
 	    passwordPanel = new JPanel();
 	    passwordLabel = new JLabel("password: ");
 	    passwordField = new JPasswordField(20);
 	    passwordField.setEditable(true);
+	    passwordPanel.setBackground(Color.decode("#edd9c0")); // background light brown
 	    passwordPanel.add(passwordLabel);
 	    passwordPanel.add(passwordField);
 	    
@@ -60,6 +63,7 @@ public class Admin extends JFrame implements ActionListener {
 		loginButton.addActionListener(this);
 		loginButton.setAlignmentX(CENTER_ALIGNMENT);
 		
+		contentPane.setBackground(Color.decode("#edd9c0")); // background light brown
 		contentPane.add(titleLabel);
 		contentPane.add(usernamePanel);
 		contentPane.add(passwordPanel);

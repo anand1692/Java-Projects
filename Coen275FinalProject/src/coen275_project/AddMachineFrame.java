@@ -51,6 +51,7 @@ public class AddMachineFrame extends JFrame implements ActionListener {
 		locationField = new JTextField("", 16);
 		locationField.setEditable(true);
 		
+		locationPanel.setBackground(Color.decode("#edd9c0")); // background light brown
 		locationPanel.add(locationLabel);
 		locationPanel.add(locationField);
 		
@@ -62,6 +63,7 @@ public class AddMachineFrame extends JFrame implements ActionListener {
 		errorMsgLabel = new JLabel("");
 		errorMsgLabel.setForeground(Color.red);
 		
+		contentPane.setBackground(Color.decode("#edd9c0")); // background light brown
 		contentPane.add(titleLabel);
 		contentPane.add(idLabel);
 		contentPane.add(locationPanel);

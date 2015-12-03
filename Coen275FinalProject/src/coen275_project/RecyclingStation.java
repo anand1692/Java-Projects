@@ -1,5 +1,6 @@
 package coen275_project;
 
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -81,6 +82,7 @@ public class RecyclingStation extends JFrame {
 
 	    // This panel is completely generated in the constructor.
 		machineListPanel = new MachineListPanel();
+		machineListPanel.setBackground(Color.decode("#edd9c0")); // background light brown
 
 		addNewMachineButton = new JButton("Add new machine");
 		addNewMachineButton.addActionListener(addMachineListener);
@@ -90,6 +92,7 @@ public class RecyclingStation extends JFrame {
 		informationDisplay.setEditable(false);
 		scrollPane = new JScrollPane(informationDisplay);
 		
+		contentPane.setBackground(Color.decode("#edd9c0")); // background light brown
 	    contentPane.add(titleLabel);
 	    contentPane.add(locationLabel);
 	    contentPane.add(Box.createRigidArea(new Dimension(0,10)));
@@ -187,7 +190,7 @@ public class RecyclingStation extends JFrame {
 			// Create a row for each existing machine
 			for (int i = 1; i <= (numMachines*2); i = i+2) {
 				
-				machineIdLabel = new JLabel("Machine " + machines[i/2].getMachineId());
+				machineIdLabel = new JLabel("Machine " + machines[i/2].getMachineId() + ": " + machines[i/2].getMachineLocation());
 				machineIdLabel.setFont(new Font("Arial", Font.PLAIN, 24));
 				c.gridx = 0;
 				c.gridy = i+1;
@@ -196,12 +199,13 @@ public class RecyclingStation extends JFrame {
 				c.fill = GridBagConstraints.HORIZONTAL;
 				this.add(machineIdLabel, c);
 				
-				machineLocationLabel = new JLabel("        " + machines[i/2].getMachineLocation());
-				machineLocationLabel.setFont(new Font("Arial", Font.PLAIN, 24));
+//				machineLocationLabel = new JLabel("        " + machines[i/2].getMachineLocation());
+//				machineLocationLabel.setFont(new Font("Arial", Font.PLAIN, 24));
+				
 				c.gridx = 0;
 				c.gridy = i+2;
 				c.weightx = 0.4;
-				this.add(machineLocationLabel, c);
+				this.add(Box.createRigidArea(new Dimension(0, 10)), c);
 			
 				c.fill = GridBagConstraints.CENTER;
 				

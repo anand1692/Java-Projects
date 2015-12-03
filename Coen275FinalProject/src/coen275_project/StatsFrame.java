@@ -1,5 +1,6 @@
 package coen275_project;
 
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -37,8 +38,6 @@ public class StatsFrame extends ApplicationFrame {
 	
 	private static String title = "title";
 	
-	JPanel panel1, panel2, panel3;
-	
 	public String mostUsedLocation;
 	public int mostUsedId;
 	
@@ -55,10 +54,11 @@ public class StatsFrame extends ApplicationFrame {
 		
 		JTabbedPane tp = new JTabbedPane();
 		
-		tp.add("pane1", new StatisticsPanel()); // stats
-		tp.add("pane2", createBarPanel(machineStatus.getTotalCashIssued(), machineStatus.getTotalValueIssued())); // bar graph of cash value vs coupon value
-		tp.add("pane3", createPiePanel(machineStatus.getItemsCollectedByType())); // pie chart of items collected by type - call createPanel()
+		tp.add("Statistics", new StatisticsPanel()); // stats
+		tp.add("Value Issued", createBarPanel(machineStatus.getTotalCashIssued(), machineStatus.getTotalValueIssued())); // bar graph of cash value vs coupon value
+		tp.add("Items Collected", createPiePanel(machineStatus.getItemsCollectedByType())); // pie chart of items collected by type - call createPanel()
 				
+		contentPane.setBackground(Color.decode("#edd9c0")); // background light brown
 		contentPane.add(tp);
 
 	}
@@ -257,6 +257,7 @@ public class StatsFrame extends ApplicationFrame {
 			statLabel = new JLabel("Most used machine in ");
 			mostUsedField = new JTextField("1", 3);
 			mostUsedLabel = new JLabel(" day(s): ");
+			flowPanel.setBackground(Color.decode("#edd9c0")); // background light brown
 			flowPanel.add(statLabel);
 			flowPanel.add(mostUsedField);
 			flowPanel.add(mostUsedLabel);
@@ -272,6 +273,7 @@ public class StatsFrame extends ApplicationFrame {
 			goBackButton.addActionListener(goBackListener);
 			this.add(goBackButton);
 			
+			this.setBackground(Color.decode("#edd9c0")); // background light brown
 		}
 		
 		// Handles "Check" button. Queries the RecyclingStation for the most used machine

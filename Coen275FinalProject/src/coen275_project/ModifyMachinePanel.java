@@ -1,5 +1,6 @@
 package coen275_project;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -58,6 +59,7 @@ class ModifyMachinePanel extends JPanel {
 		// set up currentItemsPanel
 		currentItemsPanel = new JPanel();
 		currentItemsPanel.setLayout(new GridBagLayout());
+		currentItemsPanel.setBackground(Color.decode("#edd9c0")); // background light brown
 		c = new GridBagConstraints();
 		
 		itemLabel = new JLabel("Item");
@@ -77,6 +79,7 @@ class ModifyMachinePanel extends JPanel {
 		// set up addItemsPanel
 		addItemsPanel = new JPanel();
 		addItemsPanel.setLayout(new GridBagLayout());
+		addItemsPanel.setBackground(Color.decode("#edd9c0")); // background light brown
 
 		addNewItemLabel = new JLabel("Add new item:");
 		ProjectLauncher.underlineLabel(addNewItemLabel);
@@ -118,6 +121,7 @@ class ModifyMachinePanel extends JPanel {
 		moneyLabel = new JLabel("Money in the machine (in dollars): ");
 		moneyField = new JTextField("100.00", 10);
 		moneyField.setEditable(true);
+		moneyPanel.setBackground(Color.decode("#edd9c0")); // background light brown
 		moneyPanel.add(moneyLabel);
 		moneyPanel.add(moneyField);
 		
@@ -127,9 +131,11 @@ class ModifyMachinePanel extends JPanel {
 		couponLabel = new JLabel("Coupons in the machine: ");
 		couponField = new JTextField("10", 10);
 		couponField.setEditable(true);
+		couponPanel.setBackground(Color.decode("#edd9c0")); // background light brown
 		couponPanel.add(couponLabel);
 		couponPanel.add(couponField);
 		
+		this.setBackground(Color.decode("#edd9c0")); // background light brown
 		this.add(itemsAcceptedLabel);
 		this.add(currentItemsPanel);
 		this.add(Box.createRigidArea(new Dimension(0,50)));
