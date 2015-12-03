@@ -310,7 +310,19 @@ public class RecyclingStation extends JFrame {
 			   int id = machines[machineIndex].getMachineId();
 			   
 			   machines[machineIndex].dispose();
-			   
+
+			   // delete the associated file
+			   try{
+			       File file = new File("resources/" + id + ".data");
+			        	
+			       if(file.delete()){
+//			           System.out.println(file.getName() + " is deleted!");
+		    	   } else {
+		    	      System.out.println("Delete operation is failed.");
+		    	   }
+
+		       } catch(Exception e) {}
+		    	
 			   int i = 0;
 			   for (i = machineIndex; i < numMachines-1; i++) {
 				   
@@ -492,21 +504,35 @@ public class RecyclingStation extends JFrame {
 	// RecyclingStation needs to know the index of a machine into the machines[] array. Other components only know about the machineId though
 	// which is not necessarily the same number. This function translates. 
 	private int getMachineIndexFromId(int machineId) {
-		System.out.println("machineId= "+machineId );
-		System.out.println("numMachines= "+numMachines );
-		
-		
+//		System.out.println("machineId= "+machineId );
+//		System.out.println("numMachines= "+numMachines );
+				
 		for (int i = 0; i < numMachines; i++) {
 			if (machines[i].getMachineId() == machineId) {
 				return i;
 			}
-			System.out.println("i= "+i );
+//			System.out.println("i= "+i );
 		}
 
 		System.out.println("machineId= "+machineId );
 		System.out.println("numMachines= "+numMachines );
 		System.out.println("ERROR-getMachineIndexFromId");
 		return -1;
+	}
+	
+	public void machineAlmostFull(int id) {
+		
+		informationDisplay.append("Machine " + id + " is almost full. Consider emptying it!" + "\n");
+	}
+	
+	public void machineLowOnCash(int id) {
+		
+		informationDisplay.append("Machine " + id + " is low on cash. Consider refilling it!" + "\n");
+	}
+	
+	public void machineLowOnCoupons(int id) {
+		
+		informationDisplay.append("Machine " + id + " is low on coupons. Consider refilling it!" + "\n");
 	}
 	
 	private void initPersistantMachines() {
@@ -523,6 +549,16 @@ public class RecyclingStation extends JFrame {
 			machines[numMachines] = new RecyclingMachine(id);
 			machines[numMachines].initWithFileName("resources/"+filename);
 			machines[numMachines].validate();
+			
+			// only set the machine to visible if the machine is active
+			if(!machines[numMachines].isActive()) {
+
+				machines[numMachines].setVisible(false);
+				
+			} else {
+				
+				machines[numMachines].setVisible(true);
+			}
 			
 			numMachines++;
 			if (id >= machineId)

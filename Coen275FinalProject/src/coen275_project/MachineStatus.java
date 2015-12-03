@@ -39,7 +39,7 @@ public class MachineStatus implements Serializable {
 		couponsInMachine = 2;
 		weightInMachine = 0;
 		numberOfTimesEmptied = 0;
-		weightCapacity = 1000; 
+		weightCapacity = 200; 
 		totalItemsCollected = 0;
 		totalCashIssued = 0;
 		totalCouponsIssued = 0;

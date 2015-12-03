@@ -213,15 +213,15 @@ public class RecyclingMachine extends JFrame{
 	
 		if(callEmptyMachine) {
 			callEmptyMachine = false;
-			//Call empty machine function - machineAlmostFull(machineStatus.getMachineId())
+			Admin.recyclingStationFrame.machineAlmostFull(machineStatus.getMachineId());
 		}
 		if(callRefillCash) {
 			callRefillCash = false;
-			//Call function to refill cash - machineLowOnCash(machineStatus.getMachineId())
+			Admin.recyclingStationFrame.machineLowOnCash(machineStatus.getMachineId());
 		}
 		if(callRefillCoupons) {
 			callRefillCoupons = false;
-			//Call function to refill coupons - machineLowOnCoupons(machineStatus.getMachineId())
+			Admin.recyclingStationFrame.machineLowOnCoupons(machineStatus.getMachineId());
 		}
 		
 		MachineStatus.serialize(machineStatus, filename);
