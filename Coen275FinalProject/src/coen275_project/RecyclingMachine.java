@@ -41,7 +41,7 @@ public class RecyclingMachine extends JFrame{
 	private Boolean callEmptyMachine = false, callRefillCash = false, callRefillCoupons = false;
 	
 	private static final int FRAME_WIDTH = 500;
-	private static final int FRAME_HEIGHT = 300;
+	private static final int FRAME_HEIGHT = 280;
 	Container content;
 	JLabel machineInfoLabel, metricLabel;
 	JRadioButton singleItem, multipleItem, cash, coupons;
@@ -92,13 +92,13 @@ public class RecyclingMachine extends JFrame{
 		content.add(panel);
 		
 		// Set the size of the frame
-		this.setSize(FRAME_WIDTH, FRAME_HEIGHT);
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setTitle("Recycling Machine "+machineStatus.getMachineId());
-		this.setVisible(true);
-
-		// center the mainFrame on screen
-		this.setLocationRelativeTo(null);
+//		this.setSize(FRAME_WIDTH, FRAME_HEIGHT);
+//		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//		this.setTitle("Recycling Machine "+machineStatus.getMachineId());
+//		this.setVisible(true);
+//
+//		// center the mainFrame on screen
+//		this.setLocationRelativeTo(null);
 	}
 	
 	public void initWithFileName(String filename) {
