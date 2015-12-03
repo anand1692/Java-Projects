@@ -22,6 +22,8 @@ import javax.swing.JTextField;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.general.PieDataset;
 import org.jfree.ui.ApplicationFrame;
@@ -36,7 +38,7 @@ public class StatsFrame extends ApplicationFrame {
 	private static String title = "title";
 	
 	JPanel panel1, panel2, panel3;
-
+	
 	public String mostUsedLocation;
 	public int mostUsedId;
 	
@@ -54,26 +56,15 @@ public class StatsFrame extends ApplicationFrame {
 		JTabbedPane tp = new JTabbedPane();
 		
 		tp.add("pane1", new StatisticsPanel()); // stats
-		tp.add("pane2", new JPanel()); // bar graph of cash value vs coupon value
-		tp.add("pane3", new JPanel()); // pie chart of items collected by type - call createPanel()
+		tp.add("pane2", createBarPanel(machineStatus.getTotalCashIssued(), machineStatus.getTotalValueIssued())); // bar graph of cash value vs coupon value
+		tp.add("pane3", createPiePanel(machineStatus.getItemsCollectedByType())); // pie chart of items collected by type - call createPanel()
 				
 		contentPane.add(tp);
-		
 
-		
-//		
-//	    contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
-//
-//	    // Create title label. Make the font big and underlined!
-//		titleLabel = new JLabel("Stats for Machine " + machineId);
-//		titleLabel.setFont(new Font("Arial", Font.PLAIN, 32));
-//		ProjectLauncher.underlineLabel(titleLabel);
-//		
-//		contentPane.add(titleLabel);
 	}
 	
 	//Function to create the dataset for the piechart
-	public PieDataset createDataset(TreeMap<String, Integer> itemsCollectedByType) {
+	private PieDataset createPieDataset(TreeMap<String, Integer> itemsCollectedByType) {
 		DefaultPieDataset dataset = new DefaultPieDataset();
 		for(String s:itemsCollectedByType.keySet()) {
 			dataset.setValue(s, new Integer(itemsCollectedByType.get(s)));
@@ -81,25 +72,52 @@ public class StatsFrame extends ApplicationFrame {
 		return dataset;
 	}
 	
-	public JFreeChart createChart(PieDataset dataset) {
+	private JFreeChart createPieChart(PieDataset dataset) {
 		JFreeChart chart = ChartFactory.createPieChart("Items Collected", dataset, true, true, false);
 		return chart;
 	}
 	
-	public JPanel createPanel(TreeMap<String, Integer> categories) {
-		JFreeChart chart = createChart(createDataset(categories));
+	private JPanel createPiePanel(TreeMap<String, Integer> categories) {
+		JFreeChart chart = createPieChart(createPieDataset(categories));
 		return new ChartPanel(chart);
 	}
 	
+	private DefaultCategoryDataset createBarDataset(double cashValueIssued, double couponValueIssued) {
+		
+		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+		
+		dataset.addValue(cashValueIssued, "", "Cash Value Issued");
+		dataset.addValue(couponValueIssued, "", "Coupon Value Issued");
+		dataset.addValue((cashValueIssued + couponValueIssued), "", "Total Value Issued");
+		
+		return dataset;
+	}
+	
+	private JPanel createBarPanel(double cashValueIssued, double totalValueIssued) {
+
+		DefaultCategoryDataset dataset = createBarDataset(cashValueIssued, totalValueIssued-cashValueIssued);
+		
+		// create the chart...
+        final JFreeChart chart = ChartFactory.createBarChart(
+            "Cash Issued Value vs Coupon Issued Value",         // chart title
+            "Money type",             // domain axis label
+            "Money value",            // range axis label
+            dataset,                  // data
+            PlotOrientation.VERTICAL, // orientation
+            false,                    // include legend
+            true,                     // tooltips?
+            false                     // URLs?
+        );
+        
+  		return new ChartPanel(chart);
+	}
+	
+	
 	class StatisticsPanel extends JPanel {
 		
-		private JLabel titleLabel, statLabel, mostUsedLabel;//, cashLabel, couponLabel, currentWeightLabel, weightCapacityLabel;
-//		private JLabel cashValueLabel, couponValueLabel, totalValueLabel, numItemsCollectedLabel, lastEmptiedLabel;
-//		private JLabel totalWeightLabel, timesEmptiedLabel1, timesEmptiedLabel2, mostUsedLabel1, mostUsedLabel2;
-//		
-		private JTextField mostUsedField;
+		private JLabel titleLabel, statLabel, mostUsedLabel;
 		
-//		private JComboBox timePeriodCombo;
+		private JTextField mostUsedField;
 		
 		private JButton mostUsedButton, goBackButton;
 		
@@ -256,9 +274,6 @@ public class StatsFrame extends ApplicationFrame {
 			
 		}
 		
-		
-		
-
 		// Handles "Check" button. Queries the RecyclingStation for the most used machine
 		class CheckButtonListener implements ActionListener {
 			   public void actionPerformed(ActionEvent event) {
@@ -286,6 +301,6 @@ public class StatsFrame extends ApplicationFrame {
 				   Admin.recyclingStationFrame.doneViewingStats();
 			   }		
 		}
-		
+
 	}
 }
