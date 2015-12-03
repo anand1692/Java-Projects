@@ -1,5 +1,7 @@
 package coen275_project;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.ItemSelectable;
@@ -12,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.TreeMap;
 
+import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -22,6 +25,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
 
 @SuppressWarnings("serial")
 public class RecyclingMachine extends JFrame{
@@ -69,12 +73,23 @@ public class RecyclingMachine extends JFrame{
 		JPanel moneyBack = getMoneyBackPanel();
 		JPanel display = getDisplayPanel();
 		
+		JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		panel.add(session);
+		panel.add(insertItem);
+		panel.add(moneyBack);
+		panel.add(display);
+		
+		machineInfoLabel.setForeground(Color.decode("#6ed3cf"));
 		content.setLayout(new FlowLayout());
+		content.setBackground(Color.decode("#7d4627")); // background light blue
+		session.setBackground(Color.decode("#edd9c0"));
+		insertItem.setBackground(Color.decode("#edd9c0"));
+		moneyBack.setBackground(Color.decode("#edd9c0"));
+		display.setBackground(Color.decode("#edd9c0"));
+		
 		content.add(machineInfoLabel);
-		content.add(session);
-		content.add(insertItem);
-		content.add(moneyBack);
-		content.add(display);
+		content.add(panel);
 		
 		// Set the size of the frame
 		this.setSize(FRAME_WIDTH, FRAME_HEIGHT);
@@ -101,6 +116,7 @@ public class RecyclingMachine extends JFrame{
 			if(e.getSource() == singleItem) {
 				sessionType = 1;
 				moneyToBeReturned = (double)0;
+				sessionEnded = false;
 				endSession.setEnabled(false);
 			} else if(e.getSource() == multipleItem) {
 				sessionType = 2;
@@ -169,7 +185,7 @@ public class RecyclingMachine extends JFrame{
 			if(!cashAvail) {
 				couponAvail = returnCouponMoney(moneyToBeReturned);
 				if(couponAvail) {
-					messageDisplay.setText("Sorry cash not available.\n Here's your money in coupons worth "
+					messageDisplay.setText("Sorry cash not available.\nHere's your money in coupons worth "
 							+ df.format(moneyToBeReturned) + " for " + df.format(weightAdded) + " lbs of " + itemTypeSelected
 							+ ".\nThanks for recycling!\n");
 				}else {
@@ -192,7 +208,7 @@ public class RecyclingMachine extends JFrame{
 			if(!couponAvail) {
 				cashAvail = returnCashMoney(moneyToBeReturned);
 				if(cashAvail) {
-					messageDisplay.setText("Sorry coupon not available.\n Here's your money in cash worth "
+					messageDisplay.setText("Sorry coupon not available.\nHere's your money in cash worth "
 							+ df.format(moneyToBeReturned) + " for " + df.format(weightAdded) + " lbs of " + itemTypeSelected
 							+ ".\nThanks for recycling!\n");	
 				}else {
@@ -412,11 +428,11 @@ public class RecyclingMachine extends JFrame{
 		if(!currentState.containsKey(item))
 			return (double)-1;
 			
-		if(currentWtInMachine+weight > capacity)
-			return (double)-2;
-		
 		if(currentWtInMachine+weight > 0.9*capacity)
 			callEmptyMachine = true;
+		
+		if(currentWtInMachine+weight > capacity)
+			return (double)-2;
 		
 		Double money = currentState.get(item)*weight;
 		weightAdded = weight;
