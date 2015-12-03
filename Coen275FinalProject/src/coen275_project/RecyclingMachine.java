@@ -92,13 +92,13 @@ public class RecyclingMachine extends JFrame{
 		content.add(panel);
 		
 		// Set the size of the frame
-//		this.setSize(FRAME_WIDTH, FRAME_HEIGHT);
-//		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//		this.setTitle("Recycling Machine "+machineStatus.getMachineId());
-//		this.setVisible(true);
-//
-//		// center the mainFrame on screen
-//		this.setLocationRelativeTo(null);
+		this.setSize(FRAME_WIDTH, FRAME_HEIGHT);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setTitle("Recycling Machine "+machineStatus.getMachineId());
+		this.setVisible(true);
+
+		// center the mainFrame on screen
+		this.setLocationRelativeTo(null);
 	}
 	
 	public void initWithFileName(String filename) {
@@ -316,7 +316,7 @@ public class RecyclingMachine extends JFrame{
 	    				priceDisplay.setText(" " + df.format(pricePerPound));
 	    			else {
 	    				priceDisplay.setText(" 0");
-	    				messageDisplay.setText(itemTypeSelected + " is not accepted by this machine\n");
+	    				//messageDisplay.setText(itemTypeSelected + " is not accepted by this machine\n");
 	    			}
 	    		}
 	    	}
@@ -371,10 +371,17 @@ public class RecyclingMachine extends JFrame{
 		this.itemList.setItemList(newItemList);
 		machineStatus.setMoneyInMachine(money);
 		machineStatus.setCouponsInMachine(coupons);
-		TreeMap<String, Integer> itemsCollectedByType = new TreeMap<String, Integer>();
-		for(String s: newItemList.keySet())
-			itemsCollectedByType.put(s, 0);
-		
+		TreeMap<String, Integer> itemsCollectedByType;
+		if(machineStatus.getTotalItemsCollected() == 0) {
+			itemsCollectedByType = new TreeMap<String, Integer>();
+			for(String s: newItemList.keySet())
+				itemsCollectedByType.put(s, 0);
+		} else {
+			itemsCollectedByType = machineStatus.getItemsCollectedByType();
+			for(String s: newItemList.keySet())
+				if(!itemsCollectedByType.containsKey(s))
+					itemsCollectedByType.put(s, 0);
+		}
 		machineStatus.setItemsCollectedByType(itemsCollectedByType);
 		machineStatus.setItemsInList(newItemList);
 		machineStatus.setRecyclableItemList(itemList.getRecyclableItems());
