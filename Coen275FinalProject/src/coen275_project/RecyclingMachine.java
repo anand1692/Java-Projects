@@ -165,7 +165,7 @@ public class RecyclingMachine extends JFrame{
 		return money/2.20462;
 	}
 	
-	private void finalizeTransaction() {
+	private void finalizeTransaction(Double weight) {
 		DecimalFormat df = new DecimalFormat();
 		df.setMaximumFractionDigits(2);
 		
@@ -192,9 +192,11 @@ public class RecyclingMachine extends JFrame{
 					if(sessionType == 1)
 						messageDisplay.setText("Sorry no money available. Thanks for recycling!\n");
 					else {
+						moneyToBeReturned -= itemList.getPriceOfItem(itemTypeSelected)*weight;
+						returnCashMoney(moneyToBeReturned);
 						messageDisplay.setText("Sorry no money available.\n");
 						messageDisplay.append("Here's your money worth $" + df.format(moneyToBeReturned) + 
-											  "for all items till now.\n");
+											  " for all items till now.\n");
 						messageDisplay.append(itemTypeSelected + " is not accepted. Thanks for recycling!\n");
 					}
 				}
@@ -215,6 +217,8 @@ public class RecyclingMachine extends JFrame{
 					if(sessionType == 1)
 						messageDisplay.setText("Sorry no money available. Thanks for recycling!\n");
 					else {
+						moneyToBeReturned -= itemList.getPriceOfItem(itemTypeSelected)*weight;
+						returnCashMoney(moneyToBeReturned);
 						messageDisplay.setText("Sorry no money available.\n");
 						messageDisplay.append("Here's your money worth $" + df.format(moneyToBeReturned) + 
 											  " for all items till now.\n");
@@ -264,25 +268,32 @@ public class RecyclingMachine extends JFrame{
 				}
 			} else if(e.getSource() == insertItem) {
 				Double weight = Math.random()*10 + 1;
+				Double money;
 				if(sessionType == 1) {
 					moneyToBeReturned = addItemToMachine(itemTypeSelected, weight);
-					finalizeTransaction();
+					finalizeTransaction(weight);
 				} else {
 					if(!sessionEnded) {
-						moneyToBeReturned += addItemToMachine(itemTypeSelected, weight);
-						if(moneyToBeReturned < machineStatus.getMoneyInMachine() && 
-						   machineStatus.getCouponsInMachine() <= 0) {
+						money = addItemToMachine(itemTypeSelected, weight);
+						if(money > -1)
+							moneyToBeReturned += money;
+						if((moneyToBeReturned > machineStatus.getMoneyInMachine() && 
+						   machineStatus.getCouponsInMachine() <= 0) || money == -2 ) {
 							sessionEnded = true;
-							finalizeTransaction();
+							finalizeTransaction(weight);
+							if(money == -2) 
+								messageDisplay.append("Machine is full! Ending the session!\n");
 							endSession.setEnabled(false);
 						}
-						messageDisplay.append(df.format(weight) + " lbs of "+ itemTypeSelected + " accepted! Total Money earned = $" 
+						else
+							messageDisplay.append(df.format(weight) + " lbs of "+ itemTypeSelected + " accepted! Total Money earned = $" 
 												+ df.format(moneyToBeReturned)+"\n");
 					}	
 				}
 			} else if(e.getSource() == endSession) {
 				sessionEnded = true;
-				finalizeTransaction();
+				finalizeTransaction((double)0);
+				endSession.setEnabled(false);
 			}
 		}
 	}
@@ -431,6 +442,7 @@ public class RecyclingMachine extends JFrame{
 		TreeMap<String, Double> currentState = itemList.getItemList();
 		double capacity = machineStatus.getWeightCapacity();
 		double currentWtInMachine = machineStatus.getWeightInMachine();
+		weightAdded = weight;
 		
 		if(!currentState.containsKey(item))
 			return (double)-1;
@@ -442,7 +454,6 @@ public class RecyclingMachine extends JFrame{
 			return (double)-2;
 		
 		Double money = currentState.get(item)*weight;
-		weightAdded = weight;
 		machineStatus.setWeightInMachine(machineStatus.getWeightInMachine()+weight);
 		machineStatus.setTotalItemsCollected(machineStatus.getTotalItemsCollected()+1);
 		machineStatus.updateItemsCollectedByType(item);
