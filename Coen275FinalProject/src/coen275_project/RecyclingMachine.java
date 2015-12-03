@@ -34,6 +34,7 @@ public class RecyclingMachine extends JFrame{
 	private String itemTypeSelected;
 	private Double pricePerPound, moneyToBeReturned = (double)0, weightAdded;
 	private Boolean toggle = false, sessionEnded = false;
+	private Boolean callEmptyMachine = false, callRefillCash = false, callRefillCoupons = false;
 	
 	private static final int FRAME_WIDTH = 500;
 	private static final int FRAME_HEIGHT = 300;
@@ -209,6 +210,20 @@ public class RecyclingMachine extends JFrame{
 						+ " for " + df.format(weightAdded) + " lbs of " + itemTypeSelected + ".\nThanks for recycling!\n");
 			}
 		}
+	
+		if(callEmptyMachine) {
+			callEmptyMachine = false;
+			//Call empty machine function - machineAlmostFull(machineStatus.getMachineId())
+		}
+		if(callRefillCash) {
+			callRefillCash = false;
+			//Call function to refill cash - machineLowOnCash(machineStatus.getMachineId())
+		}
+		if(callRefillCoupons) {
+			callRefillCoupons = false;
+			//Call function to refill coupons - machineLowOnCoupons(machineStatus.getMachineId())
+		}
+		
 		MachineStatus.serialize(machineStatus, filename);
 	}
 	
@@ -400,6 +415,9 @@ public class RecyclingMachine extends JFrame{
 		if(currentWtInMachine+weight > capacity)
 			return (double)-2;
 		
+		if(currentWtInMachine+weight > 0.9*capacity)
+			callEmptyMachine = true;
+		
 		Double money = currentState.get(item)*weight;
 		weightAdded = weight;
 		machineStatus.setWeightInMachine(machineStatus.getWeightInMachine()+weight);
@@ -414,8 +432,10 @@ public class RecyclingMachine extends JFrame{
 	 * 
 	 * */
 	public boolean returnCashMoney(double money) {
-		if(money > machineStatus.getMoneyInMachine())
+		if(money > machineStatus.getMoneyInMachine()) {
+			callRefillCash = true;
 			return false;
+		}
 		
 		machineStatus.setMoneyInMachine(machineStatus.getMoneyInMachine() - money);
 		machineStatus.setTotalCashIssued(machineStatus.getTotalCashIssued()+money);
@@ -429,8 +449,10 @@ public class RecyclingMachine extends JFrame{
 	 * 
 	 * */
 	public boolean returnCouponMoney(double money) {
-		if(machineStatus.getCouponsInMachine() <= 0)
+		if(machineStatus.getCouponsInMachine() <= 0) {
+			callRefillCoupons = true;
 			return false;
+		}
 		
 		machineStatus.setCouponsInMachine(machineStatus.getCouponsInMachine() - 1);
 		machineStatus.setTotalCouponsIssued(machineStatus.getTotalCouponsIssued() + 1);
