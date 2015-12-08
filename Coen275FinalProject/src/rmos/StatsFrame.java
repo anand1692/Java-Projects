@@ -61,7 +61,6 @@ public class StatsFrame extends ApplicationFrame {
 				
 		contentPane.setBackground(Color.decode("#edd9c0")); // background light brown
 		contentPane.add(tp);
-
 	}
 	
 	//Function to create the dataset for the piechart
@@ -73,16 +72,19 @@ public class StatsFrame extends ApplicationFrame {
 		return dataset;
 	}
 	
+	// creates a pie chart using the given dataset argument
 	private JFreeChart createPieChart(PieDataset dataset) {
 		JFreeChart chart = ChartFactory.createPieChart("Items Collected", dataset, true, true, false);
 		return chart;
 	}
 	
+	// returns a JPanel with a pie chart
 	private JPanel createPiePanel(TreeMap<String, Integer> categories) {
 		JFreeChart chart = createPieChart(createPieDataset(categories));
 		return new ChartPanel(chart);
 	}
 	
+	// creates the dataset to be used for cash value issued vs coupon value issued bargraph  
 	private DefaultCategoryDataset createBarDataset(double cashValueIssued, double couponValueIssued) {
 		
 		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
@@ -94,6 +96,7 @@ public class StatsFrame extends ApplicationFrame {
 		return dataset;
 	}
 	
+	// returns a JPanel with a bar graph
 	private JPanel createBarPanel(double cashValueIssued, double totalValueIssued) {
 
 		DefaultCategoryDataset dataset = createBarDataset(cashValueIssued, totalValueIssued-cashValueIssued);
@@ -114,6 +117,8 @@ public class StatsFrame extends ApplicationFrame {
 	}
 	
 	
+	// This class handles the JPanel for the first pane of the statistics. It lists all the relevant statistics about the given 
+	// recycling machine.
 	class StatisticsPanel extends JPanel {
 		
 		private JLabel titleLabel, statLabel, mostUsedLabel;
@@ -277,7 +282,8 @@ public class StatsFrame extends ApplicationFrame {
 			this.setBackground(Color.decode("#edd9c0")); // background light brown
 		}
 		
-		// Handles "Check" button. Queries the RecyclingStation for the most used machine
+		// Handles "Check" button. Queries the RecyclingStation for the "most used" machine. This is defined as the machine which has
+		// been emptied the highest number of times.
 		class CheckButtonListener implements ActionListener {
 			   public void actionPerformed(ActionEvent event) {
 				   
@@ -286,9 +292,17 @@ public class StatsFrame extends ApplicationFrame {
 					   					
 					   // this function will update public variables: mostUsedLocation and mostUsedId
 					   Admin.getRecyclingStationFrame().getMostUsedMachine(numDays);
-					   mostUsedLabel.setText(" day(s): Machine " + mostUsedId + " at " + mostUsedLocation);
-					   RecyclingStation.statsFrame.pack();
-					   					   
+					   
+					   // mostUsedId is initialized to -1. If no machine was ever emptied, then it will remain -1.
+					   if (mostUsedId < 0) {
+						   
+						   mostUsedLabel.setText(" day(s): No machine has ever been emptied");
+					   
+					   } else {
+						   
+						   mostUsedLabel.setText(" day(s): Machine " + mostUsedId + " at " + mostUsedLocation);
+						   RecyclingStation.statsFrame.pack();
+					   }		   
 				   } catch (Exception e) {
 					   mostUsedLabel.setText(" day(s): " + "ERROR: please give int value for number of days");
 					   RecyclingStation.statsFrame.pack();

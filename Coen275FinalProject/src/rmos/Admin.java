@@ -46,7 +46,6 @@ public class Admin extends JFrame implements ActionListener {
 	    usernamePanel.add(usernameLabel);
 	    usernamePanel.add(usernameField);
 	    
-	    
 	    passwordPanel = new JPanel();
 	    passwordLabel = new JLabel("password: ");
 	    passwordField = new JPasswordField(20);

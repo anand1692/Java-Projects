@@ -12,22 +12,16 @@ import javax.swing.JLabel;
 public class ProjectLauncher {
 	
 	// Different frames are declared statically here. This allows other frames to be able to switch between them.
-	static Admin adminFrame;
-	//static RecyclingStation recyclingStationFrame;
-	
+	static Admin adminFrame;	
 	
 	public static void main(String[] args) {
 		
 		adminFrame = new Admin();
-//		recyclingStationFrame = new RecyclingStation();
 		
 		adminFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		adminFrame.setTitle("Recycling Monitoring Station (RMOS) - Admin Login");
-
-//		recyclingStationFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//		recyclingStationFrame.setTitle("Recycling Monitoring Station (RMOS)");
 		
-		// TODO: program will start with admin login screen. Display enter limit frame first
+		// Program will start with admin login screen. Display enter limit frame first
 		adminFrame.pack();
 		adminFrame.setVisible(true);      
 	}
@@ -44,6 +38,7 @@ public class ProjectLauncher {
 		label.setFont(font.deriveFont(attributes));
 	}
 	
+	// Date manipulation functions are defined here and can be used globally. 
 	public static Date setToBeginningOfDay(Date date) {
 		
 		Calendar cal = Calendar.getInstance();
@@ -55,6 +50,7 @@ public class ProjectLauncher {
 	    return cal.getTime();
 	}
 	
+	// Date manipulation functions are defined here and can be used globally.	
 	public static Date setToEndOfDay(Date date) {
 		
 		Calendar cal = Calendar.getInstance();
@@ -65,7 +61,8 @@ public class ProjectLauncher {
 	    cal.set(Calendar.MILLISECOND, 999);
 	    return cal.getTime();
 	}
-	
+
+	// Date manipulation functions are defined here and can be used globally.
 	public static Date setToNDaysAgo(Date date, int n) {
 		
 		Calendar cal = Calendar.getInstance();
@@ -74,6 +71,7 @@ public class ProjectLauncher {
 	    return cal.getTime();
 	}
 	
+	// Date manipulation functions are defined here and can be used globally.
 	public static Date setToWeekAgo(Date date) {
 		
 		Calendar cal = Calendar.getInstance();
@@ -82,6 +80,7 @@ public class ProjectLauncher {
 		return cal.getTime();
 	}
 	
+	// Date manipulation functions are defined here and can be used globally.
 	public static Date setToMonthAgo(Date date) {
 		
 		Calendar cal = Calendar.getInstance();

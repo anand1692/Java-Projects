@@ -42,7 +42,7 @@ class ModifyMachinePanel extends JPanel {
 	
 	public ModifyMachinePanel() {
 		
-		// initialization
+		// initializations
 		removeListener = new RemoveItemListener();
 		addListener = new AddItemListener();
 		itemsAndPrices = new TreeMap<String, Double>();
@@ -55,7 +55,6 @@ class ModifyMachinePanel extends JPanel {
 		itemsAcceptedLabel = new JLabel("Current Items Accepted:");
 		itemsAcceptedLabel.setFont(new Font("Arial", Font.PLAIN, 24));
 		ProjectLauncher.underlineLabel(itemsAcceptedLabel);
-		
 		
 		// set up currentItemsPanel
 		currentItemsPanel = new JPanel();
@@ -75,7 +74,6 @@ class ModifyMachinePanel extends JPanel {
 		c.gridx = 1;
 		c.gridy = 0;
 		currentItemsPanel.add(priceLabel, c);
-		
 		
 		// set up addItemsPanel
 		addItemsPanel = new JPanel();
@@ -147,6 +145,8 @@ class ModifyMachinePanel extends JPanel {
 		
 	}
 	
+	// This constructor is called when it is time to modify a machine (as opposed to adding a machine). In that case, the station already
+	// has the current data for the machine. 
 	public ModifyMachinePanel(TreeMap<String, Double> currentItemsAndPrices, double machineMoney, int machineCoupons) {
 		
 		// calls default constructor
@@ -157,7 +157,6 @@ class ModifyMachinePanel extends JPanel {
 		couponField.setText("" + machineCoupons);
 		
 		updateItemPanel();
-		//RecyclingStation.modifyMachineFrame.pack();
 		
 	}
 
@@ -278,7 +277,7 @@ class ModifyMachinePanel extends JPanel {
 				   
 			   } catch (Exception e) {
 				   
-				   // invalid input. Show probably print an error. We'll add that if we have time...
+				   // invalid input. Should probably print an error. We'll add that if we have time...
 			   }			   
 
 		   }		

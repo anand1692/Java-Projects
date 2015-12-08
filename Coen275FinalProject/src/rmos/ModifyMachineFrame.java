@@ -37,10 +37,9 @@ public class ModifyMachineFrame extends JFrame implements ActionListener {
 	
 	public ModifyMachineFrame(RecyclingMachine machine) {
 
-		// initialization
+		// initializations
 		machineId = machine.getMachineId();
 		machineLocation = machine.getMachineLocation();
-		//itemsAndPrices = machine.getCurrentMachineItemsAndPrices();
 		itemsAndPrices = machine.getItemList();
 		machineMoney = machine.getMoneyInMachine();
 		machineCoupons = machine.getCouponsInMachine();
@@ -80,6 +79,8 @@ public class ModifyMachineFrame extends JFrame implements ActionListener {
 		
 	}
 
+	// Action listener for the done button. It checks user input. If all checks pass, then, it will pass
+	// the data from the user back to the recycling station to actually modify the machine.
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		

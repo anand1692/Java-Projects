@@ -75,6 +75,8 @@ public class AddMachineFrame extends JFrame implements ActionListener {
 
 	}
 
+	// This action listener handles the done button. It checks user input. If all checks pass, then, it will pass
+	// the data from the user back to the recycling station to actually create the machine.
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		   

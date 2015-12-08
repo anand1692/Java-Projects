@@ -63,12 +63,11 @@ public class RecyclingStation extends JFrame {
     	viewStatsListener = new ViewStatsListener();
     	addMachineListener = new AddMachineListener();
     	
-    	initPersistantMachines();
-    	
+    	// checks if any machines exist from a previous session and loads them.
+    	initPersistantMachines();    	
     	
 	    contentPane = this.getContentPane();
 	    contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
-
 	    
 	    // Create labels to be displayed at top of the frame
 	    titleLabel = new JLabel("Recycling Station");
@@ -101,6 +100,8 @@ public class RecyclingStation extends JFrame {
 	   	contentPane.add(addNewMachineButton);
 	    contentPane.add(scrollPane);
 			
+	    // if there were persistent machines, then, we need to call updateMachinePanel() to properly 
+	    // display them in the GUI.  
 	    if(numMachines > 0) {
 	    	machineListPanel.updateMachinePanel();
 	    }
@@ -110,7 +111,7 @@ public class RecyclingStation extends JFrame {
     // This class adds/removes from this panel as recycling machines (RCMs) are added/removed from the Recycling Station (RMOS).
 	public class MachineListPanel extends JPanel {
 	
-		private JLabel titleLabel, machineIdLabel, machineLocationLabel;
+		private JLabel titleLabel, machineIdLabel;
 		private JButton activationButton, removeMachineButton, modifyMachineButton, emptyMachineButton, viewStatsButton;
 		
 		private GridBagConstraints c;
@@ -129,7 +130,6 @@ public class RecyclingStation extends JFrame {
 			c.fill = GridBagConstraints.CENTER;
 			this.add(titleLabel, c);
 						
-			
 			if (numMachines == 0) {
 				
 				// Print message if no machines are currently assigned to the station.
@@ -198,9 +198,6 @@ public class RecyclingStation extends JFrame {
 				c.gridheight = 1;
 				c.fill = GridBagConstraints.HORIZONTAL;
 				this.add(machineIdLabel, c);
-				
-//				machineLocationLabel = new JLabel("        " + machines[i/2].getMachineLocation());
-//				machineLocationLabel.setFont(new Font("Arial", Font.PLAIN, 24));
 				
 				c.gridx = 0;
 				c.gridy = i+2;
@@ -539,6 +536,11 @@ public class RecyclingStation extends JFrame {
 		informationDisplay.append("Machine " + id + " is low on coupons. Consider refilling it!" + "\n");
 	}
 	
+	// reads from the "resources" directory in the workspace. Each saved machine is stored in a serialized function
+	// called <machine_id>.data (i.e.  "resources/0.data" has the data for Machine 0)
+	// The function goes through all files in the resources directory and creates a new RecyclingMachine for each one.
+	// It manages the machines[] array. The RecyclingMachine class handles actually reading the file and populating itself
+	// with the information. 
 	private void initPersistantMachines() {
 			
 		String[] filelist = new File("resources/").list();
