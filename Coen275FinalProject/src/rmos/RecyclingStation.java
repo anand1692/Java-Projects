@@ -1,5 +1,6 @@
-package coen275_project;
-
+package rmos;
+import rcm.MachineStatus;
+import rcm.RecyclingMachine;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -21,7 +22,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
-
 
 @SuppressWarnings("serial")
 public class RecyclingStation extends JFrame {
@@ -299,7 +299,7 @@ public class RecyclingStation extends JFrame {
 			   
 			   machineListPanel.updateMachinePanel();
 			   machineListPanel.validate();
-			   Admin.recyclingStationFrame.pack();
+			   Admin.getRecyclingStationFrame().pack();
 		   }		
 	}
 	
@@ -338,7 +338,7 @@ public class RecyclingStation extends JFrame {
 			   // redraw the RecyclingStation's GUI reflecting the removal
 			   machineListPanel.updateMachinePanel();
 			   machineListPanel.validate();
-			   Admin.recyclingStationFrame.pack();
+			   Admin.getRecyclingStationFrame().pack();
 			   
 			   informationDisplay.append("Removed machine " + id + "\n");
 		   }		
@@ -356,7 +356,7 @@ public class RecyclingStation extends JFrame {
 			   modifyMachineFrame.validate();
 			   modifyMachineFrame.pack();
 			   modifyMachineFrame.setVisible(true);
-			   Admin.recyclingStationFrame.setVisible(false);
+			   Admin.getRecyclingStationFrame().setVisible(false);
 		   }		
 	}
 
@@ -387,7 +387,7 @@ public class RecyclingStation extends JFrame {
 			   statsFrame.validate();
 			   statsFrame.pack();
 			   statsFrame.setVisible(true);
-			   Admin.recyclingStationFrame.setVisible(false);
+			   Admin.getRecyclingStationFrame().setVisible(false);
 			   
 			   informationDisplay.append("Viewed stats for machine " + id + "\n");
 		   }		
@@ -397,7 +397,7 @@ public class RecyclingStation extends JFrame {
 	public void doneViewingStats () {
 		
 		statsFrame.dispose();
-		Admin.recyclingStationFrame.setVisible(true);
+		Admin.getRecyclingStationFrame().setVisible(true);
 	}
 	
 	// Determine the most used machine the given number of days (previous to today). "most used" machine is the 
@@ -447,7 +447,7 @@ public class RecyclingStation extends JFrame {
 				   addMachineFrame.validate();
 				   addMachineFrame.pack();
 				   addMachineFrame.setVisible(true);
-				   Admin.recyclingStationFrame.setVisible(false);
+				   Admin.getRecyclingStationFrame().setVisible(false);
 				   				   
 			   } else {
 				   
@@ -481,8 +481,8 @@ public class RecyclingStation extends JFrame {
 		// redraw the RecyclingStation's GUI with the new machine
 		machineListPanel.updateMachinePanel();
 		machineListPanel.validate();
-		Admin.recyclingStationFrame.pack();
-		Admin.recyclingStationFrame.setVisible(true);
+		Admin.getRecyclingStationFrame().pack();
+		Admin.getRecyclingStationFrame().setVisible(true);
 		
 		return;
 	}
@@ -499,8 +499,8 @@ public class RecyclingStation extends JFrame {
 		// redraw the RecyclingStation's GUI with the new machine
 		machineListPanel.updateMachinePanel();
 		machineListPanel.validate();
-		Admin.recyclingStationFrame.pack();
-		Admin.recyclingStationFrame.setVisible(true);
+		Admin.getRecyclingStationFrame().pack();
+		Admin.getRecyclingStationFrame().setVisible(true);
 		
 		informationDisplay.append("Modified machine " + id + "\n");
 	}

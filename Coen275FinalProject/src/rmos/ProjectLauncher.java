@@ -1,4 +1,4 @@
-package coen275_project;
+package rmos;
 
 import java.awt.Font;
 import java.awt.font.TextAttribute;

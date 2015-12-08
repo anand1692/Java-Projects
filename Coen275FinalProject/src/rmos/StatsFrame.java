@@ -1,5 +1,6 @@
-package coen275_project;
+package rmos;
 
+import rcm.MachineStatus;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -284,7 +285,7 @@ public class StatsFrame extends ApplicationFrame {
 					   int numDays = Integer.parseInt(mostUsedField.getText());
 					   					
 					   // this function will update public variables: mostUsedLocation and mostUsedId
-					   Admin.recyclingStationFrame.getMostUsedMachine(numDays);
+					   Admin.getRecyclingStationFrame().getMostUsedMachine(numDays);
 					   mostUsedLabel.setText(" day(s): Machine " + mostUsedId + " at " + mostUsedLocation);
 					   RecyclingStation.statsFrame.pack();
 					   					   
@@ -300,7 +301,7 @@ public class StatsFrame extends ApplicationFrame {
 		class GoBackButtonListener implements ActionListener {
 			   public void actionPerformed(ActionEvent event) {
 				   
-				   Admin.recyclingStationFrame.doneViewingStats();
+				   Admin.getRecyclingStationFrame().doneViewingStats();
 			   }		
 		}
 

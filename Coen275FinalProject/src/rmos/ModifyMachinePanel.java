@@ -1,4 +1,4 @@
-package coen275_project;
+package rmos;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -18,6 +18,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
 
 
 // This Panel is used for both adding and modifying RecyclingMachines. It is a separate class in its own file so that it can 

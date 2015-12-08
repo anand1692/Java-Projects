@@ -1,6 +1,5 @@
-package coen275_project;
+package rcm;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.FlowLayout;
@@ -25,7 +24,9 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.SwingConstants;
+
+
+import rmos.Admin;
 
 @SuppressWarnings("serial")
 public class RecyclingMachine extends JFrame{
@@ -233,15 +234,15 @@ public class RecyclingMachine extends JFrame{
 	
 		if(callEmptyMachine) {
 			callEmptyMachine = false;
-			Admin.recyclingStationFrame.machineAlmostFull(machineStatus.getMachineId());
+			Admin.getRecyclingStationFrame().machineAlmostFull(machineStatus.getMachineId());
 		}
 		if(callRefillCash) {
 			callRefillCash = false;
-			Admin.recyclingStationFrame.machineLowOnCash(machineStatus.getMachineId());
+			Admin.getRecyclingStationFrame().machineLowOnCash(machineStatus.getMachineId());
 		}
 		if(callRefillCoupons) {
 			callRefillCoupons = false;
-			Admin.recyclingStationFrame.machineLowOnCoupons(machineStatus.getMachineId());
+			Admin.getRecyclingStationFrame().machineLowOnCoupons(machineStatus.getMachineId());
 		}
 		
 		MachineStatus.serialize(machineStatus, filename);

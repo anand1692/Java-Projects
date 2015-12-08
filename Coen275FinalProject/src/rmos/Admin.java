@@ -1,4 +1,4 @@
-package coen275_project;
+package rmos;
 
 import java.awt.Color;
 import java.awt.Container;
@@ -17,7 +17,7 @@ import javax.swing.JTextField;
 @SuppressWarnings("serial")
 public class Admin extends JFrame implements ActionListener {
 	
-	static RecyclingStation recyclingStationFrame;
+	private static RecyclingStation recyclingStationFrame;
 	
 	private JLabel titleLabel, usernameLabel, passwordLabel, errMsgLabel;
 	private JTextField usernameField;//, passwordField;
@@ -84,14 +84,14 @@ public class Admin extends JFrame implements ActionListener {
 
     		// log in was correct
     		ProjectLauncher.adminFrame.dispose();
-    		recyclingStationFrame = new RecyclingStation();
+    		setRecyclingStationFrame(new RecyclingStation());
     		
-    		recyclingStationFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    		recyclingStationFrame.setTitle("Recycling Monitoring Station (RMOS)");
+    		getRecyclingStationFrame().setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    		getRecyclingStationFrame().setTitle("Recycling Monitoring Station (RMOS)");
     		
-        	recyclingStationFrame.validate();
-        	recyclingStationFrame.pack();
-        	recyclingStationFrame.setVisible(true);
+        	getRecyclingStationFrame().validate();
+        	getRecyclingStationFrame().pack();
+        	getRecyclingStationFrame().setVisible(true);
 
     	} else {
     		
@@ -99,4 +99,14 @@ public class Admin extends JFrame implements ActionListener {
     		ProjectLauncher.adminFrame.pack();
     	}
     }
+
+
+	public static RecyclingStation getRecyclingStationFrame() {
+		return recyclingStationFrame;
+	}
+
+
+	public static void setRecyclingStationFrame(RecyclingStation recyclingStationFrame) {
+		Admin.recyclingStationFrame = recyclingStationFrame;
+	}
 }

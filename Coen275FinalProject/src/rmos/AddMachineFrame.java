@@ -1,4 +1,4 @@
-package coen275_project;
+package rmos;
 
 import java.awt.Color;
 import java.awt.Container;
@@ -16,52 +16,47 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-@SuppressWarnings("serial")
-public class ModifyMachineFrame extends JFrame implements ActionListener {
 
-	private JLabel titleLabel, locationLabel, errorMsgLabel;
+@SuppressWarnings("serial")
+public class AddMachineFrame extends JFrame implements ActionListener {
+
+	private JLabel titleLabel, idLabel, locationLabel, errorMsgLabel;
 	private JTextField locationField;
 	private JButton doneButton;
 	
 	private JPanel locationPanel; 
-	static ModifyMachinePanel modifyItemsPanel;
-					
+	private ModifyMachinePanel modifyItemsPanel;
+	
 	private Container contentPane;
-	
-	int machineId;
-	String machineLocation;
-	TreeMap<String, Double> itemsAndPrices;
-	double machineMoney;
-	int machineCoupons;
-	
-	public ModifyMachineFrame(RecyclingMachine machine) {
+		
+	private int machineId;
+		
 
-		// initialization
-		machineId = machine.getMachineId();
-		machineLocation = machine.getMachineLocation();
-		//itemsAndPrices = machine.getCurrentMachineItemsAndPrices();
-		itemsAndPrices = machine.getItemList();
-		machineMoney = machine.getMoneyInMachine();
-		machineCoupons = machine.getCouponsInMachine();
+	public AddMachineFrame(int id) {
+		
+		// initialization	
+		machineId = id;
 		
 	    contentPane = this.getContentPane();
 	    contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
 
 		// Create title label. Make the font big and underlined!
-	    String machineTitle = "Modify Machine " + machineId;
-		titleLabel = new JLabel(machineTitle);
+		titleLabel = new JLabel("Add New Machine");
 		titleLabel.setFont(new Font("Arial", Font.PLAIN, 32));
 		ProjectLauncher.underlineLabel(titleLabel);
 		
+		idLabel = new JLabel("Machine ID:  "+id);
+		
 		locationPanel = new JPanel();
 		locationLabel = new JLabel("Location: ");
-		locationField = new JTextField(machineLocation, 16);
+		locationField = new JTextField("", 16);
 		locationField.setEditable(true);
+		
 		locationPanel.setBackground(Color.decode("#edd9c0")); // background light brown
 		locationPanel.add(locationLabel);
 		locationPanel.add(locationField);
-
-		modifyItemsPanel = new ModifyMachinePanel(itemsAndPrices, machineMoney, machineCoupons);
+		
+		modifyItemsPanel = new ModifyMachinePanel();
 		
 		doneButton = new JButton("Done");
 		doneButton.addActionListener(this);
@@ -71,19 +66,20 @@ public class ModifyMachineFrame extends JFrame implements ActionListener {
 		
 		contentPane.setBackground(Color.decode("#edd9c0")); // background light brown
 		contentPane.add(titleLabel);
+		contentPane.add(idLabel);
 		contentPane.add(locationPanel);
 		contentPane.add(modifyItemsPanel);
 		contentPane.add(Box.createRigidArea(new Dimension(50, 50)));
 		contentPane.add(errorMsgLabel);
 		contentPane.add(doneButton);
-		
+
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		
-	    System.out.println("done button pressed");
+	public void actionPerformed(ActionEvent e) {
 		   
+	    System.out.println("done button pressed");
+	   
 	    String location = locationField.getText();
 	    TreeMap<String, Double> itemsAndPrices = modifyItemsPanel.getItemsAndPrices();
 	    double money = modifyItemsPanel.getMoney();
@@ -109,8 +105,8 @@ public class ModifyMachineFrame extends JFrame implements ActionListener {
 
 	    	// Entered values appear to be okay
 		    errorMsgLabel.setText("");
-		    Admin.recyclingStationFrame.modifyMachine(machineId, location, itemsAndPrices, money, coupons);
+		    Admin.getRecyclingStationFrame().addNewMachine(machineId, location, itemsAndPrices, money, coupons);
 	    }
-	}
-	
+	    
+    }	
 }
